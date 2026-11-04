@@ -13,6 +13,13 @@ built from what actually happened.
 Every number has a proof path. A claim without evidence does not count —
 not in the score, not in the dataset, not anywhere.
 
+## Videos
+
+| Video | Contents |
+|---|---|
+| [MuseArena: AI red team vs. AI blue team](https://youtu.be/r4D9djKnZF8) | A 3-minute overview. It shows a full exercise from the design to the training data. |
+| [MuseArena product walkthrough](https://youtu.be/MBkFCGPiqoU) | A screen recording of the console. It starts from an empty workspace and ends with a scored exercise. |
+
 ## Meta Global AI Developer Hackathon
 
 MuseArena was built for the
@@ -45,6 +52,7 @@ To prevent model hallucination, the platform does these checks:
 
 ## Contents
 
+- [Videos](#videos)
 - [Meta Global AI Developer Hackathon](#meta-global-ai-developer-hackathon)
 - [How it works](#how-it-works)
 - [What a run looks like](#what-a-run-looks-like)
