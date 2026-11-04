@@ -1,0 +1,34 @@
+title: CVE parameter-injection RCE exploited via diag.php (web)
+id: cve-web-php-diag-rce
+status: stable
+description: >
+  Detects exploitation of the PHP parameter-injection RCE class (CVE registry
+  id cve-web-php-diag-rce). Two independent shapes alert: (1) a request to
+  diag.php whose host parameter carries URL-encoded shell metacharacters, or
+  (2) injected command output reaching the service log. The request alone
+  without metacharacters is normal diagnostic use and does not alert.
+logsource:
+  category: webserver
+  product: apache
+detection:
+  selection_endpoint:
+    message|contains: 'diag.php?host='
+  metachar_semicolon:
+    message|contains: '%3B'
+  metachar_pipe:
+    message|contains: '%7C'
+  metachar_backtick:
+    message|contains: '%60'
+  selection_exec_marker:
+    message|contains: 'arena-proof'
+  selection_shell_exec:
+    message|contains: 'shell_exec'
+  condition: "selection_endpoint and 1 of metachar_* or 1 of selection_exec_*"
+falsepositives:
+  - Legitimate diagnostic use of diag.php with unusual hostnames (rare; the
+    parameter takes a bare hostname in normal use, so no metacharacters)
+level: high
+tags:
+  - attack.execution
+  - attack.t1059
+  - cve.class.php-param-rce

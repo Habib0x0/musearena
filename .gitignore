@@ -1,0 +1,29 @@
+# Secrets — never commit
+.env
+.env.*
+!.env.example
+*.local
+
+# Dependencies / build output
+node_modules/
+dist/
+*.tsbuildinfo
+
+# Runtime state
+.platform.env
+.pulumi-state/
+.kvm-images/
+.disposable/
+.ansible/
+captures/
+.venv/
+
+# Agent/tooling state
+.o4/
+.DS_Store
+*.log
+
+# Local media and scratch artifacts — never part of a commit
+demo-video/
+backend/.repro-design.mjs
+agent-guard/

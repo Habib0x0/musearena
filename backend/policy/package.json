@@ -1,0 +1,10 @@
+{
+  "name": "musearena-policy",
+  "private": true,
+  "version": "1.0.0",
+  "main": "index.js",
+  "dependencies": {
+    "@pulumi/policy": "1.21.0",
+    "@pulumi/pulumi": "3.272.0"
+  }
+}

@@ -1,0 +1,2 @@
+runtime: nodejs
+description: MuseArena deploy gate (mandatory tags, no open egress, TTL required, no host exposure)

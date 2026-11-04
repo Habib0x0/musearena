@@ -1,0 +1,13 @@
+{
+  "name": "@musearena/marketing",
+  "version": "0.1.0",
+  "private": true,
+  "scripts": {
+    "build": "node build.mjs",
+    "typecheck": "echo 'marketing: nothing to check yet'",
+    "test": "npm run build && node --test test/*.test.mjs"
+  },
+  "dependencies": {
+    "three": "^0.187.0"
+  }
+}

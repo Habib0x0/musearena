@@ -1,0 +1,31 @@
+{
+  "version": 1,
+  "catalogVersion": "arena-golden-rocky9-freeipa-1",
+  "images": {
+    "aarch64": {
+      "file": "rocky-9-freeipa-aarch64.qcow2",
+      "sha512": "ba04556df785d98dd2f864bf8b4d02e2cb1c89c8e24c90ae97783d9ebedf06edbb4b53791742a62bec69706dde7e63b1bbf0698bbd4b0c1c5b9834c8c4f0d75c",
+      "packages": [
+        "audit",
+        "bind-utils",
+        "chrony",
+        "curl",
+        "ipa-client",
+        "ipa-server",
+        "ipa-server-dns",
+        "iptables-nft",
+        "iputils",
+        "jq",
+        "krb5-workstation",
+        "nftables",
+        "openssh-server",
+        "osquery",
+        "rsyslog",
+        "sssd",
+        "sssd-tools"
+      ],
+      "builtAt": "2026-11-02T14:10:03.746Z",
+      "baseDigest": "sha256:24692a444f1f0b8b…/arena-golden-rocky9-1"
+    }
+  }
+}

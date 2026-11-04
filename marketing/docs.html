@@ -1,0 +1,139 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="description" content="Quickstart, concepts, configuration, verification, and dataset reference.">
+<title>Docs — MuseArena</title>
+<link rel="icon" type="image/svg+xml" href="assets/favicon.svg">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Geist+Mono:wght@400;500;600&family=Geist:wght@400;500;600;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="styles.css">
+<script>
+  (function () {
+    try {
+      var pref = localStorage.getItem("muse.theme");
+      var dark = pref === "dark" || (pref !== "light" && matchMedia("(prefers-color-scheme: dark)").matches);
+      if (dark) document.documentElement.classList.add("dark");
+      document.documentElement.style.colorScheme = dark ? "dark" : "light";
+    } catch (e) {}
+  })();
+</script>
+</head>
+<body>
+<header class="site-header">
+  <div class="wrap nav">
+    <a class="brand" href="index.html" aria-label="MuseArena home">
+      <svg viewBox="0 0 40 40" aria-hidden="true"><rect x="1" y="1" width="38" height="38" rx="10" fill="var(--signal)"/><path d="M11 27V13l9 8 9-8v14" fill="none" stroke="var(--signal-contrast)" stroke-width="2.4"/><circle cx="11" cy="13" r="2.4" fill="var(--cyber)"/><circle cx="20" cy="21" r="2.4" fill="var(--mint)"/><circle cx="29" cy="13" r="2.4" fill="var(--gold)"/></svg>
+      MuseArena
+    </a>
+    <nav class="nav-links" aria-label="Primary">
+      <a href="index.html">Overview</a>
+      <a href="product.html">Product</a>
+      <a href="pricing.html">Pricing</a>
+      <a href="docs.html" aria-current="page">Docs</a>
+    </nav>
+    <div class="nav-cta">
+      <button class="theme-toggle" type="button" aria-label="Toggle theme" title="Toggle theme">
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="4"/><path d="M12 2v2M12 20v2M4.93 4.93l1.41 1.41M17.66 17.66l1.41 1.41M2 12h2M20 12h2M4.93 19.07l1.41-1.41M17.66 6.34l1.41-1.41"/></svg>
+      </button>
+      <a class="btn btn-ghost" href="docs.html">Get started</a>
+      <a class="btn btn-primary" href="APP_ORIGIN/designer">Open the Designer</a>
+    </div>
+  </div>
+</header>
+<main>
+  <section class="wrap hero" style="padding-bottom:24px">
+    <p class="kicker">Documentation</p>
+    <h1 style="max-width:760px">From first design to verified dataset.</h1>
+    <p class="lede">The shortest path to a working lab, plus the configuration reference.</p>
+  </section>
+  <section class="wrap section" style="padding-top:16px">
+    <div class="doc-grid">
+      <nav class="doc-nav" aria-label="Documentation sections">
+        <a href="#quickstart">Quickstart</a>
+        <a href="#concepts">Core concepts</a>
+        <a href="#environment-variables">Environment variables</a>
+        <a href="#verification">Verification</a>
+        <a href="#export">Datasets</a>
+      </nav>
+      <div>
+        <div class="doc-section" id="quickstart">
+          <h2>Quickstart</h2>
+          <p class="muted">Run the console and designer locally, then generate your first environment.</p>
+          <pre>cd backend && npm run build
+node --env-file=../.env dist/designer/server.js
+
+cd frontend && npm run dev -- --host 0.0.0.0 --port 5173</pre>
+          <p class="muted">Open the console, sign in, and describe an organization. Review the topology, build plan, and cost before approving a deployment.</p>
+        </div>
+        <div class="doc-section" id="concepts">
+          <h2>Core concepts</h2>
+          <table>
+            <thead><tr><th>Term</th><th>Meaning</th></tr></thead>
+            <tbody>
+              <tr><td>EnvironmentSpec</td><td>Canonical JSON describing hosts, services, personas, weaknesses, and objectives.</td></tr>
+              <tr><td>Readiness probe</td><td>A check that a service actually works, often run from a peer guest.</td></tr>
+              <tr><td>Canary</td><td>A per-host proof that its sensor sees a fresh event.</td></tr>
+              <tr><td>Objective</td><td>A measurable goal with a verifiable success signal.</td></tr>
+              <tr><td>Ground truth</td><td>Hash-chained evidence that lets a dataset be replayed and re-scored.</td></tr>
+            </tbody>
+          </table>
+        </div>
+        <div class="doc-section" id="environment-variables">
+          <h2>Environment variables</h2>
+          <table>
+            <thead><tr><th>Variable</th><th>Purpose</th></tr></thead>
+            <tbody>
+              <tr><td><code>MODAL_PROXY_TOKEN_ID</code></td><td>Designer model proxy token id.</td></tr>
+              <tr><td><code>MODAL_PROXY_TOKEN_SECRET</code></td><td>Designer model proxy token secret.</td></tr>
+              <tr><td><code>MODAL_ROUTING_AFFINITY_KEY</code></td><td>Optional warm-replica pinning.</td></tr>
+              <tr><td><code>CLERK_PUBLISHABLE_KEY</code></td><td>Console and designer authentication.</td></tr>
+              <tr><td><code>DESIGN_HOST</code></td><td>Designer bind address (use <code>0.0.0.0</code> for LAN).</td></tr>
+              <tr><td><code>DESIGN_ALLOWED_ORIGINS</code></td><td>Comma-separated allowed console origins.</td></tr>
+              <tr><td><code>VITE_DESIGN_API_URL</code></td><td>Console's designer endpoint.</td></tr>
+            </tbody>
+          </table>
+        </div>
+        <div class="doc-section" id="verification">
+          <h2>Verification</h2>
+          <p class="muted">Every run is gated on evidence. A sensor that cannot see is a failed run, not a low score.</p>
+          <ul class="checks">
+            <li>Readiness probes per host and cross-host</li>
+            <li>Canary events with fresh nonces</li>
+            <li>Benign control runs for false-positive baselines</li>
+            <li>Objectives rejected when no verifiable signal exists</li>
+          </ul>
+        </div>
+        <div class="doc-section" id="export">
+          <h2>Datasets</h2>
+          <p class="muted">Exports are content-hashed and version-pinned. Re-download the dataset, verify the hash, and replay the score offline.</p>
+          <pre>node scripts/org-demo-replay.mjs</pre>
+          <p class="muted">Replay reproduces the same objectives and false-positive rate without touching a live guest.</p>
+        </div>
+      </div>
+    </div>
+  </section>
+</main>
+<footer class="site-footer">
+  <div class="wrap footer-grid">
+    <div class="footer-col">
+      <a class="brand" href="index.html" style="margin-bottom:12px">
+        <svg viewBox="0 0 40 40" width="28" height="28" aria-hidden="true"><rect x="1" y="1" width="38" height="38" rx="10" fill="var(--signal)"/><path d="M11 27V13l9 8 9-8v14" fill="none" stroke="var(--signal-contrast)" stroke-width="2.4"/></svg>
+        MuseArena
+      </a>
+      <p class="muted" style="font-size:13px;max-width:260px">Prompt-driven adversarial environment generation and agent training, with verifiable evidence.</p>
+    </div>
+    <div class="footer-col"><h5>Product</h5><a href="product.html">How it works</a><a href="pricing.html">Pricing</a><a href="APP_ORIGIN/designer">Designer</a></div>
+    <div class="footer-col"><h5>Resources</h5><a href="docs.html">Documentation</a><a href="docs.html#quickstart">Quickstart</a><a href="docs.html#environment-variables">Configuration</a></div>
+    <div class="footer-col"><h5>Platform</h5><a href="APP_ORIGIN/environments">Environments</a><a href="APP_ORIGIN/runs">Exercises</a><a href="APP_ORIGIN/traces">Traces &amp; datasets</a></div>
+  </div>
+  <div class="wrap footer-bottom">
+    <span>© 2026 MuseArena</span>
+    <span class="mono">Trajectories verifiable · ground truth hash-chained · MITRE ATT&amp;CK labelled</span>
+  </div>
+</footer>
+<script src="theme.js"></script>
+</body>
+</html>

@@ -1,0 +1,959 @@
+{
+  "versions": {
+    "catalog": "arena-catalog-4",
+    "profile": "arena-profiles-1+arena-catalog-4",
+    "image": "arena-golden-debian12-catalog-3"
+  },
+  "topology": {
+    "cidr": "10.2.0.0/16",
+    "domain": "clinic-c902605e.arena.lab",
+    "subnets": [
+      {
+        "name": "clinic-lan",
+        "cidr": "10.2.32.0/20",
+        "zone": "a"
+      }
+    ],
+    "addresses": {
+      "gw-01": "10.2.32.1/20",
+      "dc-01": "10.2.32.10/20",
+      "mail-01": "10.2.32.11/20",
+      "web-01": "10.2.32.12/20",
+      "db-01": "10.2.32.13/20",
+      "log-01": "10.2.32.14/20",
+      "atk-01": "10.2.32.15/20"
+    }
+  },
+  "hosts": [
+    {
+      "hostId": "gw-01",
+      "role": "gateway",
+      "runtime": "vm",
+      "os": "Debian 12",
+      "resources": {
+        "vcpu": 1,
+        "memoryMb": 1024,
+        "diskGb": 6
+      },
+      "address": "10.2.32.1/20",
+      "packages": [
+        "auditd",
+        "chrony",
+        "curl",
+        "dnsmasq",
+        "dnsutils",
+        "iptables",
+        "iputils-ping",
+        "jq",
+        "openssh-server",
+        "osquery",
+        "rsyslog"
+      ],
+      "units": [
+        "auditd",
+        "chrony",
+        "dnsmasq",
+        "osqueryd",
+        "rsyslog",
+        "ssh"
+      ],
+      "clientTools": [],
+      "dependsOn": [],
+      "config": [
+        {
+          "path": "/etc/dnsmasq.d/arena.conf",
+          "purpose": "host records for every guest in the environment's derived domain, bound to the lab address"
+        },
+        {
+          "path": "/etc/rsyslog.d/40-arena-forward.conf",
+          "purpose": "queue and forward to log-01 on 514"
+        }
+      ],
+      "seeds": [],
+      "readiness": [
+        {
+          "probe": "ssh-login",
+          "kind": "ssh/openssh",
+          "expect": "arena"
+        },
+        {
+          "probe": "dns-query",
+          "kind": "dns/dnsmasq"
+        }
+      ],
+      "tasks": [
+        "profile-install",
+        "dns-configure",
+        "log-forward",
+        "profile-enable",
+        "seed_marker"
+      ]
+    },
+    {
+      "hostId": "dc-01",
+      "role": "dc",
+      "runtime": "vm",
+      "os": "Debian 12",
+      "resources": {
+        "vcpu": 1,
+        "memoryMb": 1024,
+        "diskGb": 6
+      },
+      "address": "10.2.32.10/20",
+      "packages": [
+        "auditd",
+        "chrony",
+        "curl",
+        "dnsutils",
+        "iptables",
+        "iputils-ping",
+        "jq",
+        "ldap-utils",
+        "openssh-server",
+        "osquery",
+        "rsyslog",
+        "slapd"
+      ],
+      "units": [
+        "auditd",
+        "chrony",
+        "osqueryd",
+        "rsyslog",
+        "slapd",
+        "ssh"
+      ],
+      "clientTools": [
+        "dnsutils"
+      ],
+      "dependsOn": [
+        "gw-01"
+      ],
+      "config": [
+        {
+          "path": "slapd debconf",
+          "purpose": "the environment's derived domain and the admin secret"
+        },
+        {
+          "path": "dc=clinic-c902605e,dc=arena,dc=lab",
+          "purpose": "seed ou=people and the probe user"
+        },
+        {
+          "path": "/etc/rsyslog.d/40-arena-forward.conf",
+          "purpose": "queue and forward to log-01 on 514"
+        }
+      ],
+      "seeds": [
+        {
+          "target": "ou=people,dc=clinic-c902605e,dc=arena,dc=lab",
+          "purpose": "directory entries for the probe user"
+        }
+      ],
+      "readiness": [
+        {
+          "probe": "ssh-login",
+          "kind": "ssh/openssh",
+          "expect": "arena"
+        },
+        {
+          "probe": "ldap-bind",
+          "kind": "ldap/openldap",
+          "expect": "dn:"
+        }
+      ],
+      "tasks": [
+        "profile-install",
+        "dns-resolver",
+        "ldap-configure",
+        "log-forward",
+        "profile-enable",
+        "ldap-seed",
+        "seed_marker"
+      ]
+    },
+    {
+      "hostId": "mail-01",
+      "role": "mail",
+      "runtime": "vm",
+      "os": "Debian 12",
+      "resources": {
+        "vcpu": 1,
+        "memoryMb": 1024,
+        "diskGb": 6
+      },
+      "address": "10.2.32.11/20",
+      "packages": [
+        "auditd",
+        "chrony",
+        "curl",
+        "dnsutils",
+        "dovecot-gssapi",
+        "dovecot-imapd",
+        "dovecot-ldap",
+        "iptables",
+        "iputils-ping",
+        "jq",
+        "ldap-utils",
+        "openssh-server",
+        "osquery",
+        "postfix",
+        "rsyslog",
+        "swaks"
+      ],
+      "units": [
+        "auditd",
+        "chrony",
+        "dovecot",
+        "osqueryd",
+        "postfix",
+        "rsyslog",
+        "ssh"
+      ],
+      "clientTools": [
+        "ldap-utils"
+      ],
+      "dependsOn": [
+        "dc-01"
+      ],
+      "config": [
+        {
+          "path": "/etc/postfix/main.cf",
+          "purpose": "mailname, inet_interfaces on the lab address, Maildir"
+        },
+        {
+          "path": "/etc/dovecot/conf.d/99-arena.conf",
+          "purpose": "maildir location and plaintext auth on the lab address"
+        },
+        {
+          "path": "/etc/rsyslog.d/40-arena-forward.conf",
+          "purpose": "queue and forward to log-01 on 514"
+        }
+      ],
+      "seeds": [
+        {
+          "target": "probe mailbox",
+          "purpose": "a mailbox the SMTP→IMAP roundtrip can read"
+        }
+      ],
+      "readiness": [
+        {
+          "probe": "ssh-login",
+          "kind": "ssh/openssh",
+          "expect": "arena"
+        },
+        {
+          "probe": "smtp-imap-roundtrip",
+          "kind": "smtp/postfix"
+        },
+        {
+          "probe": "smtp-imap-roundtrip",
+          "kind": "imap/dovecot"
+        }
+      ],
+      "tasks": [
+        "profile-install",
+        "dns-resolver",
+        "mail-configure",
+        "log-forward",
+        "profile-enable",
+        "seed_marker"
+      ]
+    },
+    {
+      "hostId": "web-01",
+      "role": "web",
+      "runtime": "vm",
+      "os": "Debian 12",
+      "resources": {
+        "vcpu": 2,
+        "memoryMb": 1536,
+        "diskGb": 8
+      },
+      "address": "10.2.32.12/20",
+      "packages": [
+        "apache2",
+        "auditd",
+        "chrony",
+        "curl",
+        "dnsutils",
+        "iptables",
+        "iputils-ping",
+        "jq",
+        "ldap-utils",
+        "libapache2-mod-auth-gssapi",
+        "libapache2-mod-php",
+        "openssh-server",
+        "osquery",
+        "php",
+        "postgresql-client",
+        "rsyslog",
+        "swaks"
+      ],
+      "units": [
+        "apache2",
+        "auditd",
+        "chrony",
+        "osqueryd",
+        "rsyslog",
+        "ssh"
+      ],
+      "clientTools": [
+        "ldap-utils"
+      ],
+      "dependsOn": [
+        "dc-01"
+      ],
+      "config": [
+        {
+          "path": "/var/www/html/index.php",
+          "purpose": "intranet page naming the org's personas"
+        },
+        {
+          "path": "/var/www/html/diag.php",
+          "purpose": "planted command injection, only when code-flaw is planted"
+        },
+        {
+          "path": "/etc/rsyslog.d/40-arena-forward.conf",
+          "purpose": "queue and forward to log-01 on 514"
+        }
+      ],
+      "seeds": [
+        {
+          "target": "/var/www/html",
+          "purpose": "intranet application files"
+        }
+      ],
+      "readiness": [
+        {
+          "probe": "ssh-login",
+          "kind": "ssh/openssh",
+          "expect": "arena"
+        },
+        {
+          "probe": "http-2xx",
+          "kind": "http/apache-php"
+        }
+      ],
+      "tasks": [
+        "profile-install",
+        "dns-resolver",
+        "log-forward",
+        "profile-enable",
+        "deploy_app",
+        "plant_code_flaw",
+        "verify_web"
+      ]
+    },
+    {
+      "hostId": "db-01",
+      "role": "db",
+      "runtime": "vm",
+      "os": "Debian 12",
+      "resources": {
+        "vcpu": 2,
+        "memoryMb": 1536,
+        "diskGb": 8
+      },
+      "address": "10.2.32.13/20",
+      "packages": [
+        "auditd",
+        "chrony",
+        "curl",
+        "dnsutils",
+        "iptables",
+        "iputils-ping",
+        "jq",
+        "lynx",
+        "openssh-server",
+        "osquery",
+        "postgresql",
+        "rsyslog",
+        "swaks"
+      ],
+      "units": [
+        "auditd",
+        "chrony",
+        "osqueryd",
+        "postgresql",
+        "rsyslog",
+        "ssh"
+      ],
+      "clientTools": [
+        "curl",
+        "lynx"
+      ],
+      "dependsOn": [
+        "web-01"
+      ],
+      "config": [
+        {
+          "path": "/etc/postgresql/*/main/pg_hba.conf",
+          "purpose": "app role over TCP (scram) plus local trust for seeding"
+        },
+        {
+          "path": "/etc/postgresql/*/main/postgresql.conf",
+          "purpose": "listen on the lab address; log_statement=all with client addresses"
+        },
+        {
+          "path": "/etc/rsyslog.d/40-arena-forward.conf",
+          "purpose": "queue and forward to log-01 on 514"
+        }
+      ],
+      "seeds": [
+        {
+          "target": "role app + database app",
+          "purpose": "application identity; weak password only when weak-cred is planted"
+        },
+        {
+          "target": "employees, secrets",
+          "purpose": "persona table and each objective's canary value"
+        }
+      ],
+      "readiness": [
+        {
+          "probe": "ssh-login",
+          "kind": "ssh/openssh",
+          "expect": "arena"
+        },
+        {
+          "probe": "sql-select",
+          "kind": "db/postgres",
+          "expect": "1"
+        }
+      ],
+      "tasks": [
+        "profile-install",
+        "dns-resolver",
+        "db-configure",
+        "log-forward",
+        "profile-enable",
+        "db-seed-access",
+        "wait_postgres",
+        "write_seed",
+        "seed_data",
+        "grant_staff_read"
+      ]
+    },
+    {
+      "hostId": "log-01",
+      "role": "sensor",
+      "runtime": "vm",
+      "os": "Debian 12",
+      "resources": {
+        "vcpu": 1,
+        "memoryMb": 1024,
+        "diskGb": 6
+      },
+      "address": "10.2.32.14/20",
+      "packages": [
+        "auditd",
+        "chrony",
+        "curl",
+        "dnsutils",
+        "iptables",
+        "iputils-ping",
+        "jq",
+        "openssh-server",
+        "osquery",
+        "rsyslog"
+      ],
+      "units": [
+        "auditd",
+        "chrony",
+        "osqueryd",
+        "rsyslog",
+        "ssh"
+      ],
+      "clientTools": [],
+      "dependsOn": [],
+      "config": [
+        {
+          "path": "/etc/rsyslog.d/50-arena.conf",
+          "purpose": "imtcp on 514 writing /var/log/arena/remote.log"
+        }
+      ],
+      "seeds": [],
+      "readiness": [
+        {
+          "probe": "ssh-login",
+          "kind": "ssh/openssh",
+          "expect": "arena"
+        },
+        {
+          "probe": "tcp",
+          "kind": "log/rsyslog-collector"
+        }
+      ],
+      "tasks": [
+        "profile-install",
+        "dns-resolver",
+        "log-configure",
+        "profile-enable",
+        "seed_marker"
+      ]
+    },
+    {
+      "hostId": "atk-01",
+      "role": "attacker",
+      "runtime": "vm",
+      "os": "Debian 12",
+      "resources": {
+        "vcpu": 1,
+        "memoryMb": 1024,
+        "diskGb": 6
+      },
+      "address": "10.2.32.15/20",
+      "packages": [
+        "auditd",
+        "chrony",
+        "curl",
+        "dnsutils",
+        "iptables",
+        "iputils-ping",
+        "jq",
+        "ldap-utils",
+        "nmap",
+        "openssh-server",
+        "osquery",
+        "postgresql-client",
+        "python3",
+        "rsyslog",
+        "swaks",
+        "wget"
+      ],
+      "units": [
+        "auditd",
+        "chrony",
+        "osqueryd",
+        "rsyslog",
+        "ssh"
+      ],
+      "clientTools": [
+        "curl",
+        "dnsutils",
+        "jq",
+        "ldap-utils",
+        "nmap",
+        "postgresql-client",
+        "python3",
+        "swaks",
+        "wget"
+      ],
+      "dependsOn": [],
+      "config": [
+        {
+          "path": "/etc/rsyslog.d/40-arena-forward.conf",
+          "purpose": "queue and forward to log-01 on 514"
+        }
+      ],
+      "seeds": [],
+      "readiness": [
+        {
+          "probe": "ssh-login",
+          "kind": "ssh/openssh",
+          "expect": "arena"
+        }
+      ],
+      "tasks": [
+        "profile-install",
+        "dns-resolver",
+        "log-forward",
+        "profile-enable",
+        "seed_marker"
+      ]
+    }
+  ],
+  "edges": [
+    {
+      "from": "gw-01",
+      "to": "log-01",
+      "protocol": "syslog",
+      "port": 514,
+      "address": "10.2.32.14",
+      "purpose": "queued log forwarding to the collector"
+    },
+    {
+      "from": "dc-01",
+      "to": "gw-01",
+      "protocol": "dns",
+      "port": 53,
+      "address": "10.2.32.1",
+      "purpose": "dc-01 consumes dns from gw-01"
+    },
+    {
+      "from": "dc-01",
+      "to": "log-01",
+      "protocol": "syslog",
+      "port": 514,
+      "address": "10.2.32.14",
+      "purpose": "queued log forwarding to the collector"
+    },
+    {
+      "from": "mail-01",
+      "to": "dc-01",
+      "protocol": "ldap",
+      "port": 389,
+      "address": "10.2.32.10",
+      "purpose": "mail-01 consumes ldap from dc-01"
+    },
+    {
+      "from": "mail-01",
+      "to": "log-01",
+      "protocol": "syslog",
+      "port": 514,
+      "address": "10.2.32.14",
+      "purpose": "queued log forwarding to the collector"
+    },
+    {
+      "from": "web-01",
+      "to": "dc-01",
+      "protocol": "ldap",
+      "port": 389,
+      "address": "10.2.32.10",
+      "purpose": "web-01 consumes ldap from dc-01"
+    },
+    {
+      "from": "web-01",
+      "to": "log-01",
+      "protocol": "syslog",
+      "port": 514,
+      "address": "10.2.32.14",
+      "purpose": "queued log forwarding to the collector"
+    },
+    {
+      "from": "db-01",
+      "to": "web-01",
+      "protocol": "http",
+      "port": 80,
+      "address": "10.2.32.12",
+      "purpose": "db-01 consumes http from web-01"
+    },
+    {
+      "from": "db-01",
+      "to": "log-01",
+      "protocol": "syslog",
+      "port": 514,
+      "address": "10.2.32.14",
+      "purpose": "queued log forwarding to the collector"
+    },
+    {
+      "from": "atk-01",
+      "to": "log-01",
+      "protocol": "syslog",
+      "port": 514,
+      "address": "10.2.32.14",
+      "purpose": "queued log forwarding to the collector"
+    }
+  ],
+  "labProbes": [
+    {
+      "from": "mail-01",
+      "to": "dc-01",
+      "probe": "lab-dns",
+      "kind": "lab/dns",
+      "expect": "10.2.32.10"
+    },
+    {
+      "from": "dc-01",
+      "to": "mail-01",
+      "probe": "lab-dns",
+      "kind": "lab/dns",
+      "expect": "10.2.32.11"
+    },
+    {
+      "from": "dc-01",
+      "to": "web-01",
+      "probe": "lab-dns",
+      "kind": "lab/dns",
+      "expect": "10.2.32.12"
+    },
+    {
+      "from": "dc-01",
+      "to": "db-01",
+      "probe": "lab-dns",
+      "kind": "lab/dns",
+      "expect": "10.2.32.13"
+    },
+    {
+      "from": "dc-01",
+      "to": "log-01",
+      "probe": "lab-dns",
+      "kind": "lab/dns",
+      "expect": "10.2.32.14"
+    },
+    {
+      "from": "dc-01",
+      "to": "atk-01",
+      "probe": "lab-dns",
+      "kind": "lab/dns",
+      "expect": "10.2.32.15"
+    },
+    {
+      "from": "dc-01",
+      "to": "web-01",
+      "probe": "lab-http",
+      "kind": "lab/http"
+    },
+    {
+      "from": "mail-01",
+      "to": "dc-01",
+      "probe": "lab-ldap",
+      "kind": "lab/ldap",
+      "expect": "dn:"
+    },
+    {
+      "from": "dc-01",
+      "to": "mail-01",
+      "probe": "lab-smtp",
+      "kind": "lab/smtp",
+      "expect": "220"
+    },
+    {
+      "from": "dc-01",
+      "to": "mail-01",
+      "probe": "lab-mail",
+      "kind": "lab/mail-ldap"
+    },
+    {
+      "from": "web-01",
+      "to": "db-01",
+      "probe": "lab-sql",
+      "kind": "lab/sql",
+      "expect": "arena-db-ready"
+    }
+  ],
+  "steps": [
+    {
+      "hostId": "gw-01",
+      "phase": "install",
+      "task": "profile-install"
+    },
+    {
+      "hostId": "gw-01",
+      "phase": "configure",
+      "task": "dns-configure"
+    },
+    {
+      "hostId": "gw-01",
+      "phase": "configure",
+      "task": "log-forward"
+    },
+    {
+      "hostId": "gw-01",
+      "phase": "enable",
+      "task": "profile-enable"
+    },
+    {
+      "hostId": "gw-01",
+      "phase": "seed",
+      "task": "seed_marker"
+    },
+    {
+      "hostId": "dc-01",
+      "phase": "install",
+      "task": "profile-install"
+    },
+    {
+      "hostId": "dc-01",
+      "phase": "configure",
+      "task": "dns-resolver"
+    },
+    {
+      "hostId": "dc-01",
+      "phase": "configure",
+      "task": "ldap-configure"
+    },
+    {
+      "hostId": "dc-01",
+      "phase": "configure",
+      "task": "log-forward"
+    },
+    {
+      "hostId": "dc-01",
+      "phase": "enable",
+      "task": "profile-enable"
+    },
+    {
+      "hostId": "dc-01",
+      "phase": "seed",
+      "task": "ldap-seed"
+    },
+    {
+      "hostId": "dc-01",
+      "phase": "seed",
+      "task": "seed_marker"
+    },
+    {
+      "hostId": "mail-01",
+      "phase": "install",
+      "task": "profile-install"
+    },
+    {
+      "hostId": "mail-01",
+      "phase": "configure",
+      "task": "dns-resolver"
+    },
+    {
+      "hostId": "mail-01",
+      "phase": "configure",
+      "task": "mail-configure"
+    },
+    {
+      "hostId": "mail-01",
+      "phase": "configure",
+      "task": "log-forward"
+    },
+    {
+      "hostId": "mail-01",
+      "phase": "enable",
+      "task": "profile-enable"
+    },
+    {
+      "hostId": "mail-01",
+      "phase": "seed",
+      "task": "seed_marker"
+    },
+    {
+      "hostId": "web-01",
+      "phase": "install",
+      "task": "profile-install"
+    },
+    {
+      "hostId": "web-01",
+      "phase": "configure",
+      "task": "dns-resolver"
+    },
+    {
+      "hostId": "web-01",
+      "phase": "configure",
+      "task": "log-forward"
+    },
+    {
+      "hostId": "web-01",
+      "phase": "enable",
+      "task": "profile-enable"
+    },
+    {
+      "hostId": "web-01",
+      "phase": "configure",
+      "task": "deploy_app"
+    },
+    {
+      "hostId": "web-01",
+      "phase": "configure",
+      "task": "plant_code_flaw"
+    },
+    {
+      "hostId": "web-01",
+      "phase": "verify",
+      "task": "verify_web"
+    },
+    {
+      "hostId": "db-01",
+      "phase": "install",
+      "task": "profile-install"
+    },
+    {
+      "hostId": "db-01",
+      "phase": "configure",
+      "task": "dns-resolver"
+    },
+    {
+      "hostId": "db-01",
+      "phase": "configure",
+      "task": "db-configure"
+    },
+    {
+      "hostId": "db-01",
+      "phase": "configure",
+      "task": "log-forward"
+    },
+    {
+      "hostId": "db-01",
+      "phase": "enable",
+      "task": "profile-enable"
+    },
+    {
+      "hostId": "db-01",
+      "phase": "seed",
+      "task": "db-seed-access"
+    },
+    {
+      "hostId": "db-01",
+      "phase": "verify",
+      "task": "wait_postgres"
+    },
+    {
+      "hostId": "db-01",
+      "phase": "seed",
+      "task": "write_seed"
+    },
+    {
+      "hostId": "db-01",
+      "phase": "seed",
+      "task": "seed_data"
+    },
+    {
+      "hostId": "db-01",
+      "phase": "configure",
+      "task": "grant_staff_read"
+    },
+    {
+      "hostId": "log-01",
+      "phase": "install",
+      "task": "profile-install"
+    },
+    {
+      "hostId": "log-01",
+      "phase": "configure",
+      "task": "dns-resolver"
+    },
+    {
+      "hostId": "log-01",
+      "phase": "configure",
+      "task": "log-configure"
+    },
+    {
+      "hostId": "log-01",
+      "phase": "enable",
+      "task": "profile-enable"
+    },
+    {
+      "hostId": "log-01",
+      "phase": "seed",
+      "task": "seed_marker"
+    },
+    {
+      "hostId": "atk-01",
+      "phase": "install",
+      "task": "profile-install"
+    },
+    {
+      "hostId": "atk-01",
+      "phase": "configure",
+      "task": "dns-resolver"
+    },
+    {
+      "hostId": "atk-01",
+      "phase": "configure",
+      "task": "log-forward"
+    },
+    {
+      "hostId": "atk-01",
+      "phase": "enable",
+      "task": "profile-enable"
+    },
+    {
+      "hostId": "atk-01",
+      "phase": "seed",
+      "task": "seed_marker"
+    }
+  ],
+  "totals": {
+    "instances": 7,
+    "vcpu": 9,
+    "memoryMb": 8192,
+    "diskGb": 46,
+    "dollarsPerHour": 3.24
+  },
+  "gaps": []
+}

@@ -1,0 +1,120 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="description" content="Local, team, and enterprise pricing for adversarial environment generation.">
+<title>Pricing — MuseArena</title>
+<link rel="icon" type="image/svg+xml" href="assets/favicon.svg">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Geist+Mono:wght@400;500;600&family=Geist:wght@400;500;600;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="styles.css">
+<script>
+  (function () {
+    try {
+      var pref = localStorage.getItem("muse.theme");
+      var dark = pref === "dark" || (pref !== "light" && matchMedia("(prefers-color-scheme: dark)").matches);
+      if (dark) document.documentElement.classList.add("dark");
+      document.documentElement.style.colorScheme = dark ? "dark" : "light";
+    } catch (e) {}
+  })();
+</script>
+</head>
+<body>
+<header class="site-header">
+  <div class="wrap nav">
+    <a class="brand" href="index.html" aria-label="MuseArena home">
+      <svg viewBox="0 0 40 40" aria-hidden="true"><rect x="1" y="1" width="38" height="38" rx="10" fill="var(--signal)"/><path d="M11 27V13l9 8 9-8v14" fill="none" stroke="var(--signal-contrast)" stroke-width="2.4"/><circle cx="11" cy="13" r="2.4" fill="var(--cyber)"/><circle cx="20" cy="21" r="2.4" fill="var(--mint)"/><circle cx="29" cy="13" r="2.4" fill="var(--gold)"/></svg>
+      MuseArena
+    </a>
+    <nav class="nav-links" aria-label="Primary">
+      <a href="index.html">Overview</a>
+      <a href="product.html">Product</a>
+      <a href="pricing.html" aria-current="page">Pricing</a>
+      <a href="docs.html">Docs</a>
+    </nav>
+    <div class="nav-cta">
+      <button class="theme-toggle" type="button" aria-label="Toggle theme" title="Toggle theme">
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="4"/><path d="M12 2v2M12 20v2M4.93 4.93l1.41 1.41M17.66 17.66l1.41 1.41M2 12h2M20 12h2M4.93 19.07l1.41-1.41M17.66 6.34l1.41-1.41"/></svg>
+      </button>
+      <a class="btn btn-ghost" href="docs.html">Get started</a>
+      <a class="btn btn-primary" href="APP_ORIGIN/designer">Open the Designer</a>
+    </div>
+  </div>
+</header>
+<main>
+  <section class="wrap hero" style="padding-bottom:32px;text-align:center">
+    <p class="kicker">Pricing</p>
+    <h1 style="max-width:760px;margin-left:auto;margin-right:auto">Pay for environments, not seats.</h1>
+    <p class="lede" style="margin:0 auto">Start locally for free. Scale to shared workspaces and managed infrastructure when you need it.</p>
+  </section>
+  <section class="wrap section" style="padding-top:16px">
+    <div class="pricing-grid">
+      <div class="card plan">
+        <p class="plan-name">Local</p>
+        <p class="price">$0</p>
+        <p class="plan-desc">For individual researchers running tiny Linux guests on their own hardware.</p>
+        <ul>
+          <li>Conversational designer with full gates</li>
+          <li>Local KVM/QEMU provisioning</li>
+          <li>Readiness probes and canaries</li>
+          <li>Dataset export with content hashes</li>
+          <li>Single-user workspace</li>
+        </ul>
+        <a class="btn btn-ghost" href="APP_ORIGIN/designer">Start locally</a>
+      </div>
+      <div class="card plan featured">
+        <p class="plan-name">Team</p>
+        <p class="price">Contact us</p>
+        <p class="plan-desc">For security teams sharing designs, templates, and exercise evidence.</p>
+        <ul>
+          <li>Everything in Local</li>
+          <li>Shared templates and persona libraries</li>
+          <li>Managed lab infrastructure</li>
+          <li>Model-driven red/blue agents</li>
+          <li>Organization roles and audit log</li>
+        </ul>
+        <a class="btn btn-primary" href="mailto:hello@musearena.dev">Contact us</a>
+      </div>
+      <div class="card plan">
+        <p class="plan-name">Enterprise</p>
+        <p class="price">Custom</p>
+        <p class="plan-desc">For regulated environments needing isolation, residency, and support.</p>
+        <ul>
+          <li>Everything in Team</li>
+          <li>Self-hosted control plane</li>
+          <li>Custom golden images and catalogs</li>
+          <li>Data residency and retention controls</li>
+          <li>SSO and SCIM provisioning</li>
+          <li>Support and onboarding</li>
+        </ul>
+        <a class="btn btn-ghost" href="mailto:hello@musearena.dev">Talk to us</a>
+      </div>
+    </div>
+    <div class="plan-note">
+      <strong>Usage is separate.</strong> Provisioned guests are billed by your cloud provider or run on your own hardware. The console always shows the platform's hourly estimate before you approve a deployment, and requires explicit acknowledgment above $2/hr.
+    </div>
+  </section>
+</main>
+<footer class="site-footer">
+  <div class="wrap footer-grid">
+    <div class="footer-col">
+      <a class="brand" href="index.html" style="margin-bottom:12px">
+        <svg viewBox="0 0 40 40" width="28" height="28" aria-hidden="true"><rect x="1" y="1" width="38" height="38" rx="10" fill="var(--signal)"/><path d="M11 27V13l9 8 9-8v14" fill="none" stroke="var(--signal-contrast)" stroke-width="2.4"/></svg>
+        MuseArena
+      </a>
+      <p class="muted" style="font-size:13px;max-width:260px">Prompt-driven adversarial environment generation and agent training, with verifiable evidence.</p>
+    </div>
+    <div class="footer-col"><h5>Product</h5><a href="product.html">How it works</a><a href="pricing.html">Pricing</a><a href="APP_ORIGIN/designer">Designer</a></div>
+    <div class="footer-col"><h5>Resources</h5><a href="docs.html">Documentation</a><a href="docs.html#quickstart">Quickstart</a><a href="docs.html#environment-variables">Configuration</a></div>
+    <div class="footer-col"><h5>Platform</h5><a href="APP_ORIGIN/environments">Environments</a><a href="APP_ORIGIN/runs">Exercises</a><a href="APP_ORIGIN/traces">Traces &amp; datasets</a></div>
+  </div>
+  <div class="wrap footer-bottom">
+    <span>© 2026 MuseArena</span>
+    <span class="mono">Trajectories verifiable · ground truth hash-chained · MITRE ATT&amp;CK labelled</span>
+  </div>
+</footer>
+<script src="theme.js"></script>
+</body>
+</html>

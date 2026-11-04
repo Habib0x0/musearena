@@ -1,0 +1,230 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+/* Single token layer. Light is the default palette; dark is a variable set.
+   Dark values are a first pass pending owner review at the Designer stage. */
+:root {
+  color-scheme: light;
+  --radius: 0.625rem;
+
+  --ink: #fafafa;
+  --panel: #ffffff;
+  --panel2: #f4f4f5;
+  --raised: #f0f0f1;
+  --line: #e4e4e7;
+  --linestrong: #d4d4d8;
+  --track: #fafafa;
+  --control: #ececee;
+  --overlay: rgba(9, 9, 11, 0.25);
+
+  --paper: #09090b;
+  --muted: #52525b;
+  --faint: #71717a;
+
+  --signal: #18181b;
+  --signaldark: #f4f4f5;
+  --signal-hover: #27272a;
+  --signal-contrast: #ffffff;
+  --mint: #10b981;
+  --success: #059669;
+  --success-hover: #047857;
+  --success-contrast: #ffffff;
+  --danger-contrast: #ffffff;
+  --gold: #f59e0b;
+  --danger: #dc2626;
+  --cyber: #3b82f6;
+  --amber2: #f59e0b;
+  --teal2: #10b981;
+
+  --mint-surface: #ecfdf5;
+  --mint-line: #a7f3d0;
+  --mint-text: #047857;
+  --gold-surface: #fffbeb;
+  --gold-line: #fde68a;
+  --gold-text: #b45309;
+  --cyber-surface: #eff6ff;
+  --cyber-line: #bfdbfe;
+  --cyber-text: #1d4ed8;
+  --violet-surface: #f5f3ff;
+  --violet-line: #ede9fe;
+  --violet-text: #7c3aed;
+  --danger-surface: #fef2f2;
+  --danger-line: #fecaca;
+  --danger-text: #b91c1c;
+
+  --shadow-panel: 0 1px 2px rgba(9, 9, 11, 0.04), 0 1px 3px rgba(9, 9, 11, 0.06);
+  --shadow-insetline: inset 0 1px 0 rgba(255, 255, 255, 0.6);
+  --shadow-pop: 0 8px 24px rgba(9, 9, 11, 0.10);
+  --shadow-ops: 0 1px 2px rgba(9, 9, 11, 0.04), 0 1px 3px rgba(9, 9, 11, 0.05);
+  --shadow-composer: 0 10px 36px rgba(0, 0, 0, 0.08);
+
+  --selection-bg: #18181b;
+  --selection-text: #fafafa;
+  --scrollbar-thumb: #d4d4d8;
+  --scrollbar-track: #fafafa;
+  --scrollbar-hover: #a1a1aa;
+  --focus-ring: #a1a1aa;
+  --terminal: #18181b;
+  --terminal-text: #f4f4f5;
+  --terminal-muted: #a1a1aa;
+}
+
+.dark {
+  color-scheme: dark;
+
+  --ink: #0c0c0e;
+  --panel: #131316;
+  --panel2: #1a1a1e;
+  --raised: #202024;
+  --line: #28282e;
+  --linestrong: #38383f;
+  --track: #16161a;
+  --control: #24242a;
+  --overlay: rgba(0, 0, 0, 0.55);
+
+  --paper: #f4f4f5;
+  --muted: #a1a1aa;
+  --faint: #71717a;
+
+  --signal: #f4f4f5;
+  --signaldark: #1a1a1e;
+  --signal-hover: #ffffff;
+  --signal-contrast: #09090b;
+  --mint: #34d399;
+  --success: #10b981;
+  --success-hover: #34d399;
+  --success-contrast: #062e21;
+  --danger-contrast: #ffffff;
+  --gold: #fbbf24;
+  --danger: #f87171;
+  --cyber: #60a5fa;
+  --amber2: #fbbf24;
+  --teal2: #34d399;
+
+  --mint-surface: rgba(16, 185, 129, 0.12);
+  --mint-line: rgba(16, 185, 129, 0.32);
+  --mint-text: #6ee7b7;
+  --gold-surface: rgba(245, 158, 11, 0.12);
+  --gold-line: rgba(245, 158, 11, 0.32);
+  --gold-text: #fcd34d;
+  --cyber-surface: rgba(59, 130, 246, 0.12);
+  --cyber-line: rgba(59, 130, 246, 0.32);
+  --cyber-text: #93c5fd;
+  --violet-surface: rgba(139, 92, 246, 0.12);
+  --violet-line: rgba(139, 92, 246, 0.32);
+  --violet-text: #c4b5fd;
+  --danger-surface: rgba(220, 38, 38, 0.12);
+  --danger-line: rgba(220, 38, 38, 0.32);
+  --danger-text: #fca5a5;
+
+  --shadow-panel: 0 1px 2px rgba(0, 0, 0, 0.4);
+  --shadow-insetline: inset 0 1px 0 rgba(255, 255, 255, 0.04);
+  --shadow-pop: 0 12px 32px rgba(0, 0, 0, 0.5);
+  --shadow-ops: 0 1px 2px rgba(0, 0, 0, 0.35);
+  --shadow-composer: 0 10px 36px rgba(0, 0, 0, 0.45);
+
+  --selection-bg: #f4f4f5;
+  --selection-text: #0c0c0e;
+  --scrollbar-thumb: #38383f;
+  --scrollbar-track: #0c0c0e;
+  --scrollbar-hover: #52525b;
+  --focus-ring: #71717a;
+  --terminal: #0a0a0c;
+  --terminal-text: #f4f4f5;
+  --terminal-muted: #a1a1aa;
+}
+
+html { min-width: 320px; background: var(--ink); }
+body {
+  min-height: 100dvh;
+  background: var(--ink);
+  color: var(--paper);
+  font-family: "Geist", "Inter", system-ui, -apple-system, sans-serif;
+  font-feature-settings: "cv11", "ss01";
+  text-rendering: optimizeLegibility;
+  -webkit-font-smoothing: antialiased;
+}
+
+button, input, textarea, select { font: inherit; }
+button:not(:disabled), a, summary, label:has(input[type="file"]) { cursor: pointer; }
+
+::selection { background: var(--selection-bg); color: var(--selection-text); }
+:focus-visible { outline: 2px solid var(--focus-ring); outline-offset: 2px; }
+
+::-webkit-scrollbar { width: 10px; height: 10px; }
+::-webkit-scrollbar-track { background: var(--scrollbar-track); }
+::-webkit-scrollbar-thumb { background: var(--scrollbar-thumb); border: 2px solid var(--scrollbar-track); border-radius: 8px; }
+::-webkit-scrollbar-thumb:hover { background: var(--scrollbar-hover); }
+
+.mono { font-family: "Geist Mono", ui-monospace, SFMono-Regular, Menlo, monospace; }
+
+.ops-panel { border: 1px solid var(--line); border-radius: 12px; background: var(--panel); box-shadow: var(--shadow-ops); }
+.ops-panel, .ops-panel * { border-color: var(--line); }
+/* Theme safety net: any literal white/black surface follows the palette. */
+.bg-white { background-color: var(--panel) !important; }
+.text-white { color: var(--signal-contrast) !important; }
+.border-white { border-color: var(--line) !important; }
+.bg-black { background-color: var(--paper) !important; }
+.text-black { color: var(--paper) !important; }
+.ops-input { width: 100%; border: 1px solid var(--line); border-radius: 8px; background: var(--panel); color: var(--paper); box-shadow: 0 1px 2px rgba(9, 9, 11, 0.03); }
+.ops-input::placeholder { color: var(--faint); }
+.ops-input:focus { border-color: var(--focus-ring); outline: none; box-shadow: 0 0 0 3px rgba(161, 161, 170, 0.18); }
+
+details > summary::-webkit-details-marker { display: none; }
+input[type="number"]::-webkit-outer-spin-button,
+input[type="number"]::-webkit-inner-spin-button { margin: 0; }
+
+/* Motion — functional only, ~500ms cap, reduced-motion always wins. */
+@keyframes muse-fade-up { from { opacity: 0; transform: translateY(8px); } to { opacity: 1; transform: translateY(0); } }
+@keyframes muse-fade-in { from { opacity: 0; } to { opacity: 1; } }
+@keyframes muse-scale-in { from { opacity: 0; transform: scale(0.97); } to { opacity: 1; transform: scale(1); } }
+@keyframes muse-pulse-soft { 0%, 100% { opacity: 1; } 50% { opacity: 0.45; } }
+@keyframes muse-slide-in-right { from { opacity: 0; transform: translateX(28px); } to { opacity: 1; transform: translateX(0); } }
+
+.animate-fade-up { animation: muse-fade-up 0.38s cubic-bezier(0.16, 1, 0.3, 1) both; }
+.animate-slide-in-right { animation: muse-slide-in-right 0.45s cubic-bezier(0.16, 1, 0.3, 1) both; }
+.animate-fade-in { animation: muse-fade-in 0.25s ease-out both; }
+.animate-scale-in { animation: muse-scale-in 0.22s cubic-bezier(0.16, 1, 0.3, 1) both; }
+.animate-pulse-soft { animation: muse-pulse-soft 1.8s ease-in-out infinite; }
+.delay-1 { animation-delay: 60ms; }
+.delay-2 { animation-delay: 120ms; }
+.delay-3 { animation-delay: 180ms; }
+.delay-4 { animation-delay: 240ms; }
+
+@media (prefers-reduced-motion: reduce) {
+  *, *::before, *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+    scroll-behavior: auto !important;
+  }
+}
+
+tbody tr, summary { transition: background-color 160ms ease; }
+a, button { transition-property: color, background-color, border-color, box-shadow; transition-duration: 160ms; transition-timing-function: ease; }
+
+/* Topology reveal — functional: shows structure being built, not ambient motion. */
+@keyframes topo-segment-in {
+  from { opacity: 0; transform: translateY(6px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+@keyframes topo-node-in {
+  from { opacity: 0; transform: translateY(8px) scale(0.92); }
+  to { opacity: 1; transform: translateY(0) scale(1); }
+}
+@keyframes topo-edge-in {
+  from { opacity: 0; }
+  to { opacity: 1; }
+}
+.topo-segment { opacity: 0; animation: topo-segment-in 0.4s cubic-bezier(0.16,1,0.3,1) both; }
+.topo-node { opacity: 0; animation: topo-node-in 0.42s cubic-bezier(0.16,1,0.3,1) both; transform-box: fill-box; transform-origin: center; }
+.topo-edge { opacity: 0; animation: topo-edge-in 0.45s ease-out both; }
+.topo-label { opacity: 0; animation: topo-edge-in 0.4s ease-out both; }
+.topo-legend { opacity: 0; animation: topo-edge-in 0.4s ease-out both; }
+
+@keyframes muse-slide-out-right {
+  from { opacity: 1; transform: translateX(0); }
+  to { opacity: 0; transform: translateX(24px); }
+}
+.animate-slide-out-right { animation: muse-slide-out-right 0.4s cubic-bezier(0.4,0,1,1) both; }

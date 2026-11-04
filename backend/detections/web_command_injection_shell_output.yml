@@ -1,0 +1,17 @@
+title: Web Server Child Process Output (Command Injection)
+id: 6f1d3b52-1c1e-4a7e-9a55-0c3c0b6f5a01
+status: test
+description: A web worker produced shell output on stderr outside Apache's own log format, which only happens when a request spawned a command.
+author: MuseArena
+date: 2026-10-27
+tags:
+  - attack.execution
+  - attack.t1059
+logsource:
+  product: musearena
+  service: apache
+detection:
+  selection:
+    kind: process.stderr
+  condition: selection
+level: high

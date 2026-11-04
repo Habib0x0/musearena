@@ -1,0 +1,162 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="description" content="Design, provision, exercise, and export verifiable adversarial environments.">
+<title>Product — MuseArena</title>
+<link rel="icon" type="image/svg+xml" href="assets/favicon.svg">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Geist+Mono:wght@400;500;600&family=Geist:wght@400;500;600;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="styles.css">
+<script>
+  (function () {
+    try {
+      var pref = localStorage.getItem("muse.theme");
+      var dark = pref === "dark" || (pref !== "light" && matchMedia("(prefers-color-scheme: dark)").matches);
+      if (dark) document.documentElement.classList.add("dark");
+      document.documentElement.style.colorScheme = dark ? "dark" : "light";
+    } catch (e) {}
+  })();
+</script>
+</head>
+<body>
+<header class="site-header">
+  <div class="wrap nav">
+    <a class="brand" href="index.html" aria-label="MuseArena home">
+      <svg viewBox="0 0 40 40" aria-hidden="true"><rect x="1" y="1" width="38" height="38" rx="10" fill="var(--signal)"/><path d="M11 27V13l9 8 9-8v14" fill="none" stroke="var(--signal-contrast)" stroke-width="2.4"/><circle cx="11" cy="13" r="2.4" fill="var(--cyber)"/><circle cx="20" cy="21" r="2.4" fill="var(--mint)"/><circle cx="29" cy="13" r="2.4" fill="var(--gold)"/></svg>
+      MuseArena
+    </a>
+    <nav class="nav-links" aria-label="Primary">
+      <a href="index.html">Overview</a>
+      <a href="product.html" aria-current="page">Product</a>
+      <a href="pricing.html">Pricing</a>
+      <a href="docs.html">Docs</a>
+    </nav>
+    <div class="nav-cta">
+      <button class="theme-toggle" type="button" aria-label="Toggle theme" title="Toggle theme">
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="4"/><path d="M12 2v2M12 20v2M4.93 4.93l1.41 1.41M17.66 17.66l1.41 1.41M2 12h2M20 12h2M4.93 19.07l1.41-1.41M17.66 6.34l1.41-1.41"/></svg>
+      </button>
+      <a class="btn btn-ghost" href="docs.html">Get started</a>
+      <a class="btn btn-primary" href="APP_ORIGIN/designer">Open the Designer</a>
+    </div>
+  </div>
+</header>
+<main>
+  <section class="wrap hero" style="padding-bottom:32px">
+    <p class="kicker">Product</p>
+    <h1 style="max-width:820px">A complete environment pipeline, not a prompt wrapper.</h1>
+    <p class="lede">Design, provision, exercise, and export — each stage is independently verifiable, and nothing proceeds on the model's word alone.</p>
+    <div class="hero-actions"><a class="btn btn-primary btn-lg" href="APP_ORIGIN/designer">Open the Designer</a><a class="btn btn-ghost btn-lg" href="pricing.html">See pricing</a></div>
+  </section>
+
+  <section class="wrap section">
+    <div class="feature-row">
+      <div>
+        <p class="kicker">01 / Designer</p>
+        <h2>Conversational, but schema-gated.</h2>
+        <p class="muted">Describe the organization, its systems, and the weakness the exercise should make provable. The designer produces a canonical EnvironmentSpec, a topology graph, a per-host build sheet, and a cost estimate.</p>
+        <ul class="checks">
+          <li>Live streaming of the agent's reasoning, tool calls, and repair attempts</li>
+          <li>Catalog-derived service vocabulary, so designs stay deployable</li>
+          <li>Budget gate with the exact violated cap named</li>
+          <li>Refinement, forking, and JSON import/export</li>
+        </ul>
+      </div>
+      <div class="panel"><div class="panel-head"><span>design-artifact</span><span class="pill emerald">canProvision=true</span></div><div class="panel-body">
+        <table><thead><tr><th>Host</th><th>Role</th><th>Services</th><th>Readiness</th></tr></thead><tbody>
+          <tr><td>gw-01</td><td>gateway</td><td>dnsmasq</td><td>dns-resolve</td></tr>
+          <tr><td>dc-01</td><td>directory</td><td>FreeIPA</td><td>ldap-bind</td></tr>
+          <tr><td>web-01</td><td>web</td><td>apache/php</td><td>http-2xx</td></tr>
+          <tr><td>db-01</td><td>db</td><td>postgres</td><td>sql-select</td></tr>
+        </tbody></table>
+      </div></div>
+    </div>
+
+    <div class="feature-row">
+      <div class="panel"><div class="panel-head"><span>readiness audit</span><span class="pill emerald">15/15 passed</span></div><div class="panel-body">
+        <ul class="checks">
+          <li>ldap-bind on dc-01 from a peer guest</li>
+          <li>smtp-imap-roundtrip with wrong-password refusal</li>
+          <li>gssapi-sql and gssapi-http with valid tickets</li>
+          <li>git-ldap-login and git-ssh</li>
+          <li>lab-ldap and lab-smtp cross-host probes</li>
+        </ul>
+      </div></div>
+      <div>
+        <p class="kicker">02 / Deployment</p>
+        <h2>Real guests, real verification.</h2>
+        <p class="muted">Pulumi provisions local or managed KVM/QEMU guests. Configuration is per-instance, and readiness is proven from one guest against another — not from the host's own logs.</p>
+        <ul class="checks">
+          <li>FreeIPA with Kerberos and GSSAPI keytabs</li>
+          <li>auditd and osquery sensors required before scoring</li>
+          <li>Cross-host probes for DNS, LDAP, SMTP, HTTP, and SQL</li>
+          <li>TTL-based teardown with no leaked processes</li>
+        </ul>
+      </div>
+    </div>
+
+    <div class="feature-row">
+      <div>
+        <p class="kicker">03 / Exercise</p>
+        <h2>Scored on evidence, not activity.</h2>
+        <p class="muted">Red and blue runs are scored against declared objectives, detection coverage, and false-positive baselines. A blind sensor fails the run instead of producing a meaningless score.</p>
+        <ul class="checks">
+          <li>Objectives with verifiable success signals</li>
+          <li>Time-to-detect and containment metrics</li>
+          <li>Benign control runs establish the FP baseline</li>
+          <li>Live drift reporting when a guest is changed out of band</li>
+        </ul>
+      </div>
+      <div class="panel"><div class="panel-head"><span>exercise score</span><span class="pill blue">T1110 · auth-failures</span></div><div class="panel-body">
+        <table><tbody>
+          <tr><td>Objectives met</td><td><strong>3 / 3</strong></td></tr>
+          <tr><td>Points</td><td><strong>30 / 30</strong></td></tr>
+          <tr><td>Alerts</td><td>7 (5 per-attempt)</td></tr>
+          <tr><td>False positives</td><td>0 over 152 benign events</td></tr>
+        </tbody></table>
+      </div></div>
+    </div>
+
+    <div class="feature-row">
+      <div class="panel"><div class="panel-head"><span>dataset</span><span class="pill emerald">hash verified</span></div><div class="panel-body">
+        <pre>sha256:043f9639fd087e1b…
+steps: 7 · redaction: strict
+replay: 1/1 · 10/10 · FP 0</pre>
+      </div></div>
+      <div>
+        <p class="kicker">04 / Export</p>
+        <h2>Traces you can re-verify.</h2>
+        <p class="muted">Every run exports a content-hashed dataset with MITRE ATT&amp;CK labels and version-pinned tooling. Re-download it, check the hash, and replay the score offline.</p>
+        <ul class="checks">
+          <li>Verifiable spans for every model call</li>
+          <li>Hash-chained ground truth</li>
+          <li>Redaction levels for sharing</li>
+          <li>Offline replay reproduces the score</li>
+        </ul>
+      </div>
+    </div>
+  </section>
+</main>
+<footer class="site-footer">
+  <div class="wrap footer-grid">
+    <div class="footer-col">
+      <a class="brand" href="index.html" style="margin-bottom:12px">
+        <svg viewBox="0 0 40 40" width="28" height="28" aria-hidden="true"><rect x="1" y="1" width="38" height="38" rx="10" fill="var(--signal)"/><path d="M11 27V13l9 8 9-8v14" fill="none" stroke="var(--signal-contrast)" stroke-width="2.4"/></svg>
+        MuseArena
+      </a>
+      <p class="muted" style="font-size:13px;max-width:260px">Prompt-driven adversarial environment generation and agent training, with verifiable evidence.</p>
+    </div>
+    <div class="footer-col"><h5>Product</h5><a href="product.html">How it works</a><a href="pricing.html">Pricing</a><a href="APP_ORIGIN/designer">Designer</a></div>
+    <div class="footer-col"><h5>Resources</h5><a href="docs.html">Documentation</a><a href="docs.html#quickstart">Quickstart</a><a href="docs.html#environment-variables">Configuration</a></div>
+    <div class="footer-col"><h5>Platform</h5><a href="APP_ORIGIN/environments">Environments</a><a href="APP_ORIGIN/runs">Exercises</a><a href="APP_ORIGIN/traces">Traces &amp; datasets</a></div>
+  </div>
+  <div class="wrap footer-bottom">
+    <span>© 2026 MuseArena</span>
+    <span class="mono">Trajectories verifiable · ground truth hash-chained · MITRE ATT&amp;CK labelled</span>
+  </div>
+</footer>
+<script src="theme.js"></script>
+</body>
+</html>

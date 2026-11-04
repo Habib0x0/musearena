@@ -1,0 +1,72 @@
+<!doctype html>
+<html lang="en"><head><meta charset="utf-8"><title>Org-lab demo — run-org-demo-mw1sdflt</title>
+<style>
+:root{color-scheme:light dark}body{font:14px/1.45 ui-sans-serif,system-ui,sans-serif;margin:2rem auto;max-width:60rem;padding:0 1rem}
+h1{margin:0 0 .2rem}.sub,.dim{opacity:.65;font-size:.85em}
+.cards{display:grid;grid-template-columns:repeat(auto-fit,minmax(11rem,1fr));gap:.6rem;margin:1.2rem 0}
+.card{border:1px solid #8884;border-radius:.5rem;padding:.6rem .75rem;display:flex;flex-direction:column;gap:.25rem}
+.card .k{opacity:.6;font-size:.75em;text-transform:uppercase;letter-spacing:.04em}
+table{border-collapse:collapse;width:100%;margin:.4rem 0 1.2rem}
+th,td{border-bottom:1px solid #8883;padding:.3rem .5rem;text-align:left}
+th{font-size:.75em;text-transform:uppercase;letter-spacing:.04em;opacity:.6}
+.ok{color:#12805c}.bad{color:#b42318;font-weight:600}
+code{font-size:.85em}footer{margin-top:2rem;opacity:.6;font-size:.8em}
+</style></head><body>
+<h1>12-person clinic — org lab</h1>
+<p class="sub"><code>run-org-demo-mw1sdflt</code> · kvm · fixed-seed design · debian-12-catalog</p>
+<p class="sub">pin: clinic@1 · catalog arena-catalog-4 · profile arena-profile-2 · image arena-golden-debian12-catalog-3</p>
+<section class="cards">
+<div class="card"><span class="k">Objectives</span><strong>3/3</strong></div>
+<div class="card"><span class="k">Points</span><strong>30/30</strong></div>
+<div class="card"><span class="k">Alerts</span><strong>1 · 0 FP</strong></div>
+<div class="card"><span class="k">Benign events</span><strong>833</strong></div>
+<div class="card"><span class="k">Dataset</span><strong>sha256:36d710d4e3413367…</strong></div>
+<div class="card"><span class="k">Run time</span><strong>308s</strong></div>
+</section>
+<h2>Topology</h2><h3>clinic-lan <span class="dim">10.2.32.0/20 · zone a</span></h3>
+    <table><tr><th>host</th><th>role</th><th>os</th><th>services</th><th>weaknesses</th></tr>
+    <tr><td>gw-01</td><td>gateway</td><td>Debian 12</td><td>dns</td><td>0</td></tr>
+<tr><td>dc-01</td><td>dc</td><td>Debian 12</td><td>ldap</td><td>0</td></tr>
+<tr><td>mail-01</td><td>mail</td><td>Debian 12</td><td>smtp, imap</td><td>0</td></tr>
+<tr><td>web-01</td><td>web</td><td>Debian 12</td><td>http</td><td>1</td></tr>
+<tr><td>db-01</td><td>db</td><td>Debian 12</td><td>db</td><td>1</td></tr>
+<tr><td>log-01</td><td>sensor</td><td>Debian 12</td><td>log</td><td>0</td></tr>
+<tr><td>atk-01</td><td>attacker</td><td>Debian 12</td><td>ssh</td><td>0</td></tr></table>
+<h2>Readiness</h2><table><tr><th>host</th><th>probe</th><th>result</th><th>detail</th></tr><tr><td>gw-01</td><td>ssh/openssh/ssh-login</td><td class="ok">PASS</td><td class="dim">ssh-login answered</td></tr>
+<tr><td>gw-01</td><td>dns/dnsmasq/dns-query</td><td class="ok">PASS</td><td class="dim">dns-query answered</td></tr>
+<tr><td>dc-01</td><td>ssh/openssh/ssh-login</td><td class="ok">PASS</td><td class="dim">ssh-login answered</td></tr>
+<tr><td>dc-01</td><td>ldap/openldap/ldap-bind</td><td class="ok">PASS</td><td class="dim">ldap-bind answered</td></tr>
+<tr><td>dc-01</td><td>lab/dns/lab-dns</td><td class="ok">PASS</td><td class="dim">lab/dns answered from dc-01</td></tr>
+<tr><td>dc-01</td><td>lab/dns/lab-dns</td><td class="ok">PASS</td><td class="dim">lab/dns answered from dc-01</td></tr>
+<tr><td>dc-01</td><td>lab/dns/lab-dns</td><td class="ok">PASS</td><td class="dim">lab/dns answered from dc-01</td></tr>
+<tr><td>dc-01</td><td>lab/dns/lab-dns</td><td class="ok">PASS</td><td class="dim">lab/dns answered from dc-01</td></tr>
+<tr><td>dc-01</td><td>lab/dns/lab-dns</td><td class="ok">PASS</td><td class="dim">lab/dns answered from dc-01</td></tr>
+<tr><td>dc-01</td><td>lab/http/lab-http</td><td class="ok">PASS</td><td class="dim">lab/http answered from dc-01</td></tr>
+<tr><td>dc-01</td><td>lab/smtp/lab-smtp</td><td class="ok">PASS</td><td class="dim">lab/smtp answered from dc-01</td></tr>
+<tr><td>dc-01</td><td>lab/mail-ldap/lab-mail</td><td class="ok">PASS</td><td class="dim">lab/mail-ldap answered from dc-01</td></tr>
+<tr><td>mail-01</td><td>ssh/openssh/ssh-login</td><td class="ok">PASS</td><td class="dim">ssh-login answered</td></tr>
+<tr><td>mail-01</td><td>smtp/postfix/smtp-imap-roundtrip</td><td class="ok">PASS</td><td class="dim">smtp-imap-roundtrip answered</td></tr>
+<tr><td>mail-01</td><td>imap/dovecot/smtp-imap-roundtrip</td><td class="ok">PASS</td><td class="dim">smtp-imap-roundtrip answered</td></tr>
+<tr><td>mail-01</td><td>lab/dns/lab-dns</td><td class="ok">PASS</td><td class="dim">lab/dns answered from mail-01</td></tr>
+<tr><td>mail-01</td><td>lab/ldap/lab-ldap</td><td class="ok">PASS</td><td class="dim">lab/ldap answered from mail-01</td></tr>
+<tr><td>web-01</td><td>ssh/openssh/ssh-login</td><td class="ok">PASS</td><td class="dim">ssh-login answered</td></tr>
+<tr><td>web-01</td><td>http/apache-php/http-2xx</td><td class="ok">PASS</td><td class="dim">http-2xx answered</td></tr>
+<tr><td>web-01</td><td>lab/sql/lab-sql</td><td class="ok">PASS</td><td class="dim">lab/sql answered from web-01</td></tr>
+<tr><td>db-01</td><td>ssh/openssh/ssh-login</td><td class="ok">PASS</td><td class="dim">ssh-login answered</td></tr>
+<tr><td>db-01</td><td>db/postgres/sql-select</td><td class="ok">PASS</td><td class="dim">sql-select answered</td></tr>
+<tr><td>log-01</td><td>ssh/openssh/ssh-login</td><td class="ok">PASS</td><td class="dim">ssh-login answered</td></tr>
+<tr><td>log-01</td><td>log/rsyslog-collector/tcp</td><td class="ok">PASS</td><td class="dim">tcp answered</td></tr>
+<tr><td>log-01</td><td>lab/log/lab-log</td><td class="ok">PASS</td><td class="dim">log written on gw-01 reached log-01</td></tr>
+<tr><td>atk-01</td><td>ssh/openssh/ssh-login</td><td class="ok">PASS</td><td class="dim">ssh-login answered</td></tr></table>
+<h2>Gates</h2><table><tr><th>host</th><th>canary</th></tr>
+<tr><td>gw-01</td><td class="ok">PASS</td></tr>
+<tr><td>dc-01</td><td class="ok">PASS</td></tr>
+<tr><td>mail-01</td><td class="ok">PASS</td></tr>
+<tr><td>web-01</td><td class="ok">PASS</td></tr>
+<tr><td>db-01</td><td class="ok">PASS</td></tr>
+<tr><td>log-01</td><td class="ok">PASS</td></tr>
+<tr><td>atk-01</td><td class="ok">PASS</td></tr>
+<tr><td>proof</td><td class="ok">PASS</td></tr></table>
+<h2>Timeline</h2><ol><li>0.0s — plan: 7 hosts, 28 packages, 10 edges, 45 steps, $3.24/hr, dns clinic-c902605e.arena.lab</li><li>0.0s — design: fixed-seed, 7 hosts, clinic@1, pinned sha256:10a535b4a8fa…</li><li>0.7s — image: debian-12-catalog</li><li>28.0s — gw-01: ssh-ready as arena</li><li>30.1s — dc-01: ssh-ready as arena</li><li>30.2s — mail-01: ssh-ready as arena</li><li>30.3s — web-01: ssh-ready as arena</li><li>30.4s — db-01: ssh-ready as arena</li><li>30.5s — log-01: ssh-ready as arena</li><li>30.7s — atk-01: ssh-ready as arena</li><li>137.0s — configure gw-01: ok=true</li><li>137.0s — configure dc-01: ok=true</li><li>137.0s — configure mail-01: ok=true</li><li>137.0s — configure web-01: ok=true</li><li>137.0s — configure db-01: ok=true</li><li>137.0s — configure log-01: ok=true</li><li>137.0s — configure atk-01: ok=true</li><li>145.5s — readiness gw-01: ssh-login=PASS dns-query=PASS</li><li>145.5s — readiness dc-01: ssh-login=PASS ldap-bind=PASS lab-dns=PASS lab-dns=PASS lab-dns=PASS lab-dns=PASS lab-dns=PASS lab-http=PASS lab-smtp=PASS lab-mail=PASS</li><li>145.5s — readiness mail-01: ssh-login=PASS smtp-imap-roundtrip=PASS smtp-imap-roundtrip=PASS lab-dns=PASS lab-ldap=PASS</li><li>145.5s — readiness web-01: ssh-login=PASS http-2xx=PASS lab-sql=PASS</li><li>145.5s — readiness db-01: ssh-login=PASS sql-select=PASS</li><li>145.5s — readiness log-01: ssh-login=PASS tcp=PASS lab-log=PASS</li><li>145.5s — readiness atk-01: ssh-login=PASS</li><li>154.0s — gates: 7/7 canaries, proof PASS</li><li>154.6s — exercise: model agents — red/blue meta-models/Muse-Spark-Open-816B-A42B, personas glimmer</li><li>307.9s — exercise: 3/3 objectives, 30/30 points, 1 alerts, 0 FP</li><li>307.9s — response block IP on dc-01 -&gt; 10.2.32.15 enforced=true ()</li><li>307.9s — dataset: sha256:36d710d4e3413… (180 steps)</li></ol>
+<footer>Model agents (meta-models/Muse-Spark-Open-816B-A42B, meta-models/Muse-Spark-Open-816B-A42B, glimmer) acting from an attacker guest on unbridged user-mode guests: red acts same-host and is labelled by per-objective marker. Not exercised: DHCP, cross-host requests (T-15), and log forwarding — log-01 accepts syslog on 514 but hosts do not ship to it yet. Dataset <code>sha256:36d710d4e341336756d9ee69bb48eb3341667ee6a9bd35203a8f56c66ade268a</code>, 180 steps.</footer>
+</body></html>

@@ -1,0 +1,30 @@
+title: CVE-2018-9205 unauthenticated file upload to webshell (web)
+id: cve-2018-9205-jquery-file-upload
+status: stable
+description: >
+  Detects exploitation of the unauthenticated arbitrary-file-upload class
+  (CVE-2018-9205, blueimp jQuery File Upload <= 9.22.0): a POST of a PHP file
+  to the upload endpoint, followed by a request executing a file under
+  /uploads/ that was never a legitimate upload. Blue is graded on catching
+  the upload or the execution, not the port scan around it.
+logsource:
+  category: webserver
+  product: apache
+detection:
+  selection_upload_php:
+    message|contains: 'POST /upload.php'
+  selection_php_in_upload:
+    message|contains: '/uploads/'
+  selection_php_ext:
+    message|contains: '.php'
+  selection_shell_marker:
+    message|contains: 'arena-proof'
+  condition: "(selection_upload_php and selection_php_ext) or (selection_php_in_upload and selection_php_ext) or selection_shell_marker"
+falsepositives:
+  - Administrators uploading legitimate PHP tooling through the endpoint
+    (none in normal range operation; uploads are not a documented feature)
+level: high
+tags:
+  - attack.initial-access
+  - attack.t1190
+  - cve.2018-9205

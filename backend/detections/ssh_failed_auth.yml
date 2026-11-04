@@ -1,0 +1,17 @@
+title: Failed SSH Authentication Attempt
+id: 7e2b4c1a-9d3f-4a8b-b6c2-1f0d5e8a3c04
+status: test
+description: sshd rejected a logon for a user that does not exist, or failed a password/public-key attempt. A single event is an attempt; a burst is credential guessing.
+author: MuseArena
+date: 2026-10-28
+tags:
+  - attack.credential_access
+  - attack.t1110
+logsource:
+  product: musearena
+  service: sshd
+detection:
+  selection:
+    kind: auth.login.failed
+  condition: selection
+level: medium

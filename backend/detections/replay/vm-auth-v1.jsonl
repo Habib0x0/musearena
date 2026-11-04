@@ -1,0 +1,1 @@
+{"runId":"calibration","hostId":"dc-01","kind":"auth.login.failed","actor":"red","at":"2026-10-28T09:00:00.000Z","detail":{"user":"RED-o3-calib","src":"127.0.0.1","method":"invalid-user","source":"vm-auth","line":"Oct 28 09:00:00 dc-01 sshd[4242]: Invalid user RED-o3-calib from 127.0.0.1 port 40122"}}

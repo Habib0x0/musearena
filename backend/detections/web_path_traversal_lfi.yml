@@ -1,0 +1,28 @@
+title: Local File Inclusion Or Path Traversal In Web Request
+id: 40f81152-ba0f-4f69-ae50-e4b3d36f22a7
+status: test
+description: Request URL reaches for a system file or a PHP stream wrapper, or climbs directories. Ordinary intranet traffic requests pages, never /etc/passwd or php://filter. Seen in live agent runs where red probed index.php for file inclusion.
+author: MuseArena
+date: 2026-11-04
+tags:
+  - attack.initial_access
+  - attack.t1190
+logsource:
+  product: musearena
+  service: apache
+detection:
+  selection:
+    kind: http.request
+    path|contains:
+      - 'etc/passwd'
+      - 'etc%2fpasswd'
+      - 'etc/shadow'
+      - 'etc%2fshadow'
+      - 'php://'
+      - 'php%3a%2f%2f'
+      - '../'
+      - '..%2f'
+      - '%2e%2e%2f'
+      - '%2e%2e/'
+  condition: selection
+level: high

@@ -1,0 +1,140 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="description" content="MuseArena turns a prompt into a working cyber range with real services, scored attacks and defenses, and verifiable evidence.">
+<title>MuseArena — Describe the org. Get a live cyber range.</title>
+<link rel="icon" type="image/svg+xml" href="assets/favicon.svg">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Geist+Mono:wght@400;500;600&family=Geist:wght@400;500;600;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="styles.css">
+<script>
+  (function () {
+    try {
+      var pref = localStorage.getItem("muse.theme");
+      var dark = pref === "dark" || (pref !== "light" && matchMedia("(prefers-color-scheme: dark)").matches);
+      if (dark) document.documentElement.classList.add("dark");
+      document.documentElement.style.colorScheme = dark ? "dark" : "light";
+    } catch (e) {}
+  })();
+</script>
+</head>
+<body>
+<header class="site-header">
+  <div class="wrap nav">
+    <a class="brand" href="index.html" aria-label="MuseArena home">
+      <svg viewBox="0 0 40 40" aria-hidden="true"><rect x="1" y="1" width="38" height="38" rx="10" fill="var(--signal)"/><path d="M11 27V13l9 8 9-8v14" fill="none" stroke="var(--signal-contrast)" stroke-width="2.4"/><circle cx="11" cy="13" r="2.4" fill="var(--cyber)"/><circle cx="20" cy="21" r="2.4" fill="var(--mint)"/><circle cx="29" cy="13" r="2.4" fill="var(--gold)"/></svg>
+      MuseArena
+    </a>
+    <nav class="nav-links" aria-label="Primary">
+      <a href="index.html" aria-current="page">Overview</a>
+      <a href="product.html">Product</a>
+      <a href="pricing.html">Pricing</a>
+      <a href="docs.html">Docs</a>
+    </nav>
+    <div class="nav-cta">
+      <button class="theme-toggle" type="button" aria-label="Toggle theme" title="Toggle theme">
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="4"/><path d="M12 2v2M12 20v2M4.93 4.93l1.41 1.41M17.66 17.66l1.41 1.41M2 12h2M20 12h2M4.93 19.07l1.41-1.41M17.66 6.34l1.41-1.41"/></svg>
+      </button>
+      <a class="btn btn-ghost" href="docs.html">Get started</a>
+      <a class="btn btn-primary" href="APP_ORIGIN/designer">Open the Designer</a>
+    </div>
+  </div>
+</header>
+
+<main>
+  <section class="hero">
+    <div class="hero-bg" aria-hidden="true">
+      <div class="hero-field">
+        <div class="orb orb-a"></div>
+        <div class="orb orb-b"></div>
+        <div class="orb orb-c"></div>
+      </div>
+      <div class="rings">
+        <div class="ring ring-1"></div>
+        <div class="ring ring-2"></div>
+        <div class="ring ring-3"></div>
+      </div>
+      <div class="hero-marquee">
+        <div class="hero-marquee-track">
+          <span>Design</span><span>Deploy</span><span>Exercise</span><span>Export</span><span>Proof over promises</span><span>Real services</span><span>Verifiable evidence</span>
+          <span>Design</span><span>Deploy</span><span>Exercise</span><span>Export</span><span>Proof over promises</span><span>Real services</span><span>Verifiable evidence</span>
+        </div>
+      </div>
+    </div>
+    <div class="wrap hero-inner">
+      <span class="hero-kicker"><span class="dot"></span> Prompt-driven cyber ranges</span>
+      <h1>Describe the org.<br><span class="accent">Get a live cyber range.</span></h1>
+      <p class="lede">Describe the organization you want. MuseArena builds a working lab with real services, runs attacks and defenses against it, and exports the evidence as a verifiable dataset.</p>
+      <div class="hero-actions">
+        <a class="btn btn-primary btn-lg" href="APP_ORIGIN/designer">Open the Designer</a>
+        <a class="btn btn-ghost btn-lg" href="APP_ORIGIN/designer?demo=request">Request a demo</a>
+      </div>
+      <p class="hero-note">Every design is checked for cost, capability, and measurable goals before anything runs.</p>
+    </div>
+  </section>
+
+  <section class="wrap section">
+    <div class="section-head">
+      <p class="kicker">The loop</p>
+      <h2>From a brief to evidence, in four checked steps.</h2>
+      <p class="lede">Every design passes the same checks a careful reviewer would apply before anything runs.</p>
+    </div>
+    <div class="loop reveal-stagger">
+      <div class="loop-line" aria-hidden="true"></div>
+      <div class="loop-step"><p class="loop-num">01 / Design</p><h3>Conversational designer</h3><p>A clear specification, a topology map, and a cost check. Designs over budget are stopped with the exact limit explained.</p></div>
+      <div class="loop-step"><p class="loop-num">02 / Deploy</p><h3>Provision real guests</h3><p>Local or managed virtual machines, configured per host and checked for exploitability.</p></div>
+      <div class="loop-step"><p class="loop-num">03 / Exercise</p><h3>Red and blue agents</h3><p>Attacks and defenses scored on goals, detection time, and containment — not on log volume.</p></div>
+      <div class="loop-step"><p class="loop-num">04 / Export</p><h3>Verifiable traces</h3><p>Datasets with content hashes and ATT&amp;CK labels you can verify and replay.</p></div>
+    </div>
+  </section>
+
+  <section class="wrap section">
+    <div class="section-head">
+      <p class="kicker">Why teams use it</p>
+      <h2>Built for proof, not demos.</h2>
+    </div>
+    <div class="features reveal-stagger">
+      <div class="feature"><span class="feature-icon">◇</span><h3>Provable objectives</h3><p>Every goal has a measurable result. Designs without a provable outcome are rejected.</p></div>
+      <div class="feature"><span class="feature-icon">✓</span><h3>Honest scoring</h3><p>Readiness checks and false-positive baselines. A blind sensor fails the run instead of scoring it.</p></div>
+      <div class="feature"><span class="feature-icon">$</span><h3>Cost before approval</h3><p>Costs are computed from the platform, not estimated by the model. Over-budget designs name the limit exceeded.</p></div>
+      <div class="feature"><span class="feature-icon">⌘</span><h3>Real directory services</h3><p>Real directory services: FreeIPA with Kerberos across mail, database, and Git.</p></div>
+      <div class="feature"><span class="feature-icon">⇄</span><h3>Cross-host verification</h3><p>Checks run from one machine against another, so reachability is proven, not assumed.</p></div>
+      <div class="feature"><span class="feature-icon">⛓</span><h3>Hash-chained truth</h3><p>Datasets can be downloaded and hash-checked. Replay reproduces the same score offline.</p></div>
+    </div>
+  </section>
+
+  <section class="wrap section">
+    <div class="cta-panel reveal">
+      <p class="kicker">Start now</p>
+      <h2>Describe your first environment.</h2>
+      <p class="lede" style="margin:0 auto 28px">Describe the organization and the weakness you want proven. Review the exact build plan before approving.</p>
+      <a class="btn btn-primary btn-lg" href="APP_ORIGIN/designer">Open the Designer</a>
+    </div>
+  </section>
+</main>
+
+<footer class="site-footer">
+  <div class="wrap footer-grid">
+    <div class="footer-col">
+      <a class="brand" href="index.html" style="margin-bottom:12px">
+        <svg viewBox="0 0 40 40" width="28" height="28" aria-hidden="true"><rect x="1" y="1" width="38" height="38" rx="10" fill="var(--signal)"/><path d="M11 27V13l9 8 9-8v14" fill="none" stroke="var(--signal-contrast)" stroke-width="2.4"/></svg>
+        MuseArena
+      </a>
+      <p class="muted" style="font-size:13px;max-width:280px">Prompt-driven adversarial environment generation and agent training, with verifiable evidence.</p>
+    </div>
+    <div class="footer-col"><h5>Product</h5><a href="product.html">How it works</a><a href="pricing.html">Pricing</a><a href="APP_ORIGIN/designer">Designer</a></div>
+    <div class="footer-col"><h5>Resources</h5><a href="docs.html">Documentation</a><a href="docs.html#quickstart">Quickstart</a><a href="docs.html#environment-variables">Configuration</a></div>
+    <div class="footer-col"><h5>Platform</h5><a href="APP_ORIGIN/environments">Environments</a><a href="APP_ORIGIN/runs">Exercises</a><a href="APP_ORIGIN/traces">Traces &amp; datasets</a></div>
+  </div>
+  <div class="wrap footer-bottom">
+    <span>© 2026 MuseArena</span>
+    <span class="mono">Every run traceable · evidence hash-chained · MITRE ATT&amp;CK labelled</span>
+  </div>
+</footer>
+<script src="theme.js"></script>
+<script src="scroll.js"></script>
+</body>
+</html>

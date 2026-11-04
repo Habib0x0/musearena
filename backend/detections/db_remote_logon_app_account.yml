@@ -1,0 +1,23 @@
+title: Remote Logon With Shared Application DB Account
+id: 3c9e1a7d-8b2f-4f6a-a1c4-2d7e5b9f0c03
+status: test
+description: The shared application account authenticated from a non-local address. Application traffic is local in this design; remote use suggests stolen or guessed credentials.
+author: MuseArena
+date: 2026-10-27
+tags:
+  - attack.initial_access
+  - attack.t1078
+logsource:
+  product: musearena
+  service: postgresql
+detection:
+  selection:
+    kind: auth.logon
+    user: app
+  filter_local:
+    src:
+      - '127.0.0.1'
+      - '::1'
+      - '[local]'
+  condition: selection and not filter_local
+level: high
