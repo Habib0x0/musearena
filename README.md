@@ -1,3 +1,22 @@
+<p align="center">
+  <img src="docs/assets/musearena-banner.svg" alt="MuseArena: AI red vs AI blue, built on Muse Spark. Every attack, on the record." width="100%">
+</p>
+
+<p align="center">
+  <a href="LICENSE"><img src="https://img.shields.io/badge/license-Apache--2.0-3b82f6" alt="License: Apache-2.0"></a>
+  <a href="https://cerebralvalley.ai/e/meta-ai-developer-hackathon"><img src="https://img.shields.io/badge/Meta-Global%20AI%20Developer%20Hackathon-dc2626" alt="Meta Global AI Developer Hackathon"></a>
+  <img src="https://img.shields.io/badge/node-%3E%3D18-71717a" alt="Node.js 18 or newer">
+  <a href="https://youtu.be/r4D9djKnZF8"><img src="https://img.shields.io/badge/demo-YouTube-dc2626?logo=youtube&logoColor=white" alt="Demo video on YouTube"></a>
+</p>
+
+<p align="center">
+  <a href="#videos">Videos</a> ·
+  <a href="#how-it-works">How it works</a> ·
+  <a href="#build-and-run-locally">Build and run locally</a> ·
+  <a href="#architecture">Architecture</a> ·
+  <a href="#the-training-loop">Training loop</a>
+</p>
+
 # MuseArena
 
 Turn a prompt into a live cyber range. Run scored attack and defense
@@ -63,6 +82,8 @@ To prevent model hallucination, the platform does these checks:
 - [Safety rules](#safety-rules)
 - [Telemetry](#telemetry)
 - [Contributing](#contributing)
+- [Documentation](#documentation)
+- [Security](#security)
 - [License](#license)
 
 ## How it works
@@ -305,26 +326,22 @@ and [`docs/learning-api.md`](docs/learning-api.md).
 
 ## Architecture
 
-```
-            ┌────────────┐   prompt   ┌────────────┐
-            │  console   │───────────▶│  designer  │ spec + plan + cost
-            │ (React/Vite)│◀───────────│ (port 8787)│ digest-pinned
-            └─────┬──────┘  design    └────────────┘
-                  │ approve
-                  ▼
-            ┌────────────┐   claim    ┌────────────┐
-            │  Supabase  │◀──────────▶│   worker   │ QEMU/Docker guests
-            │ (Postgres, │            │ (Temporal) │ configure → gates →
-            │  RLS,      │            └─────┬──────┘ exercise → score →
-            │  storage)  │                  │        publish
-            └─────┬──────┘                  ▼
-                  │            traces · datasets · models
-                  ▼
-            ┌────────────┐
-            │ learning   │  review · datasets · training · evaluation
-            │ API (8788) │  append-only, hash-chained evidence
-            └────────────┘
-```
+<p align="center">
+  <img src="docs/assets/musearena-architecture.svg" alt="MuseArena architecture: the console sends a prompt to the designer. The approved spec goes to Supabase. The worker builds the lab, runs the exercise, and writes the score, traces, and dataset back to Supabase. The learning API builds datasets and runs training." width="100%">
+</p>
+
+### Software components
+
+| Component | Technology | Role | Default port |
+|---|---|---|---|
+| Console | React 19, Vite, Tailwind CSS, Clerk | Web UI: design, approve, monitor, review | 5173 |
+| Designer | Node.js, TypeScript | Turns a prompt into a checked spec, a build plan, and a cost estimate | 8787 |
+| Learning API | Node.js, TypeScript | Review, datasets, training runs, evaluation, deployments | 8788 |
+| Worker | Node.js, Temporal | Provisions, configures, gates, runs the exercise, scores, publishes | None |
+| Temporal | Temporal server | Runs the deployment workflows for the worker | 7234 |
+| Supabase | Postgres, row-level security, Storage | Specs, runs, hash-chained traces, audit log, datasets | 54321 |
+| Lab hosts | QEMU (KVM or HVF), Ansible, Docker | The virtual machines of the range | None |
+| Model plane | Muse Spark Open, Muse Glimmer 30B, Meta Model API | Designer, red, blue, and employee agents | None |
 
 | Folder | Purpose |
 |---|---|
@@ -416,6 +433,49 @@ each check hits real routes and a real database.
 
 The specification lives in `.muse/specs/`: requirements, design, tasks, and
 a progress log for each platform generation.
+
+## Documentation
+
+| Topic | Document |
+|---|---|
+| Set up a local stack and run an exercise | [docs/getting-started.md](docs/getting-started.md) |
+| Learning API routes | [docs/learning-api.md](docs/learning-api.md) |
+| Backend: designer, worker, provisioner, scoring | [backend/README.md](backend/README.md) |
+| Agent prompts (designer, red, blue, persona) | [backend/src/agents/prompts/](backend/src/agents/prompts/) |
+| Console | [frontend/README.md](frontend/README.md) |
+| UI design standard | [frontend/DESIGN.md](frontend/DESIGN.md) |
+| Shared contracts | [shared/README.md](shared/README.md) |
+| Platform deployment | [deployment/README.md](deployment/README.md) |
+| Operations runbook | [deployment/RUNBOOK.md](deployment/RUNBOOK.md) |
+| Rules for coding agents in this repository | [AGENTS.md](AGENTS.md) |
+| Contribution rules | [CONTRIBUTING.md](CONTRIBUTING.md) |
+
+## Security
+
+Do not open a public issue for a security problem. Use the private
+vulnerability reporting in the
+[Security tab](https://github.com/Habib0x0/musearena/security) of this
+repository.
+
+> **Warning:** a MuseArena lab contains weaknesses that are planted on
+> purpose. Run labs only on hosts that you control. Do not connect lab
+> guests to a production network.
+
+### External services
+
+MuseArena connects to these external services at run time:
+
+| Service | When | Purpose |
+|---|---|---|
+| Supabase | Always | Database, row-level security, and storage |
+| Clerk (`api.clerk.com`) | Always | Sign-in and organization roles |
+| Modal | Only when `MODAL_*` keys are set | Self-hosted Muse Spark Open and Muse Glimmer 30B endpoints |
+| Meta Model API (`api.meta.ai`) | Only when `META_API_KEY` is set | Hosted Muse models |
+| Image mirrors (`cloud.debian.org`, `dl.rockylinux.org`, `pkg.osquery.io`) | When you build golden images, or when a guest does not have a package | Base images and packages |
+| PostHog | Only when `VITE_POSTHOG_KEY` is set | Product analytics. See [Telemetry](#telemetry). |
+
+Each service operates under its own terms. You are responsible for your
+agreements with these services.
 
 ## License
 
