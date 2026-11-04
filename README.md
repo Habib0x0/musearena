@@ -13,11 +13,42 @@ built from what actually happened.
 Every number has a proof path. A claim without evidence does not count —
 not in the score, not in the dataset, not anywhere.
 
+## Meta Global AI Developer Hackathon
+
+MuseArena was built for the
+[Meta Global AI Developer Hackathon](https://cerebralvalley.ai/e/meta-ai-developer-hackathon).
+
+| | |
+|---|---|
+| **Hosts** | Meta and Cerebral Valley |
+| **Format** | Remote, worldwide |
+| **Dates** | October 26 to November 4, 2026 |
+| **Goal** | Build with Meta's newest models in ten days |
+
+### Meta models in MuseArena
+
+| Model | Where it runs | What it does |
+|---|---|---|
+| Muse Spark Open (`meta-models/Muse-Spark-Open-816B-A42B`) | Self-hosted on Modal | Designs the lab. Plays the red agent and the blue agent. |
+| Muse Glimmer 30B | Self-hosted on Modal (SGLang) | Plays the employee personas. |
+| Meta Model API (`muse-spark-1.1` to `1.3`, `muse-wonder-1.0`) | Meta Model API (Responses API) | Optional model surface for all agent roles. |
+
+The platform accepts models from Meta surfaces only. A fail-closed
+allowlist in the code enforces this rule.
+
+To prevent model hallucination, the platform does these checks:
+
+- Blue must cite the log rows for each alert. Blue must use real ATT&CK
+  technique IDs.
+- Red cannot claim a success. Only a planted proof value counts.
+- Employee agents use a fixed list of actions. They have no shell access.
+
 ## Contents
 
+- [Meta Global AI Developer Hackathon](#meta-global-ai-developer-hackathon)
 - [How it works](#how-it-works)
 - [What a run looks like](#what-a-run-looks-like)
-- [Quickstart](#quickstart)
+- [Build and run locally](#build-and-run-locally)
 - [Architecture](#architecture)
 - [The training loop](#the-training-loop)
 - [Evidence and integrity](#evidence-and-integrity)
@@ -62,49 +93,207 @@ pure emulation. Every step of the pipeline — provision, configure,
 readiness, gates, exercise, score, publish — is a checked stage with a
 pass/fail state, not a best-effort attempt.
 
-## Quickstart
+## Build and run locally
 
-Requirements: Node.js 18+, npm 9+, the Supabase CLI, QEMU + Ansible for
-VM ranges (HVF on macOS, KVM on Linux).
+This procedure builds MuseArena on one computer. It starts the database,
+the services, and the console. Then it runs a full exercise.
+
+### Step 1: Get the tools
+
+Install these tools before you start:
+
+| Tool | Version | Use |
+|---|---|---|
+| Node.js | 18 or newer | Builds and runs all services |
+| npm | 9 or newer | Installs the packages |
+| Docker | Current | Runs the local Supabase stack and container labs |
+| Supabase CLI | 2.117 or newer | Starts the local database |
+| Temporal CLI | Current | Runs the workflow server for the worker |
+| QEMU | Current | Starts the lab virtual machines |
+| Ansible | Current | Configures the lab virtual machines |
+
+For VM labs, the computer must have hardware acceleration:
+
+- On macOS, QEMU uses HVF.
+- On Linux, QEMU uses KVM. Make sure that your user can write to `/dev/kvm`.
+
+Get these accounts and keys:
+
+- A Clerk application. You need its publishable key for sign-in.
+- Optional: Modal or Meta Model API keys. You need them only for model
+  agents. Without them, the scripted agents and the fixed-seed design
+  operate.
+
+### Step 2: Get the code and build it
 
 ```sh
-git clone https://github.com/Habib0x0/musearena.git && cd musearena
+git clone https://github.com/Habib0x0/musearena.git
+cd musearena
 npm install
 npm run build
 ```
 
-Start a database and apply migrations:
+The build compiles all workspaces. The backend output goes to
+`backend/dist/`.
+
+### Step 3: Start the database
 
 ```sh
 cd backend
 supabase start
-supabase db push
+cd ..
 ```
 
-Copy `.env.example` to `.env` and `.env.local` and fill in the keys you
-have (a Clerk sign-in key, a Supabase URL + service key; model keys only
-if you want model-driven agents).
+The first start applies all migrations in
+`backend/supabase/migrations/`. The command shows the local API URL and
+the keys. Keep this output for Step 4.
 
-Start the services (each in its own terminal):
+> **Note:** after a `git pull`, apply new migrations with
+> `supabase migration up` in `backend/`.
 
-```sh
-temporal server start-dev --port 7234        # worker dependency
-node backend/dist/designer/server.js         # designer,   port 8787
-node backend/dist/api/main.js                # learning,   port 8788
-node backend/dist/worker.js                  # worker
-cd frontend && npm run dev                   # console,    port 5173
-```
+### Step 4: Set the environment
 
-Open `http://localhost:5173`, sign in, and run the six-guest demo from
-the Designer — or headless:
+1. Copy the example file:
+
+   ```sh
+   cp .env.example .env
+   ```
+
+2. In `.env`, set these values from the Step 3 output:
+
+   | Name | Value |
+   |---|---|
+   | `SUPABASE_URL` | The local API URL |
+   | `SUPABASE_SERVICE_ROLE_KEY` | The service role key |
+   | `SUPABASE_ANON_KEY` | The anon key |
+   | `CLERK_PUBLISHABLE_KEY` | Your Clerk publishable key |
+   | `CLERK_SECRET_KEY` | Your Clerk secret key. Member management needs it. |
+
+3. Create `frontend/.env.local` for the console. Set these values:
+
+   | Name | Value |
+   |---|---|
+   | `VITE_CLERK_PUBLISHABLE_KEY` | Your Clerk publishable key |
+   | `VITE_SUPABASE_URL` | The local API URL |
+   | `VITE_SUPABASE_PUBLISHABLE_KEY` | The anon key |
+   | `VITE_DESIGN_API_URL` | `http://127.0.0.1:8787` |
+   | `VITE_LEARNING_API_URL` | `http://127.0.0.1:8788` |
+
+4. Optional: for model agents, set the model surface keys in `.env`:
+   - Modal: `MODAL_PROXY_TOKEN_ID`, `MODAL_PROXY_TOKEN_SECRET`,
+     `MODAL_BASE_URL`, `MODAL_MODEL_ID`.
+   - Meta Model API: `META_API_KEY`, `META_BASE_URL`, `META_MODEL_ID`.
+
+> **Caution:** do not commit `.env` or `.env.local`. These files contain
+> secrets. The `.gitignore` file excludes them.
+
+### Step 5: Check the host
 
 ```sh
 cd backend
-node scripts/org-demo.mjs          # full run
-node scripts/org-demo-replay.mjs   # offline: verify the dataset hash
+node scripts/host-preflight.mjs
 ```
 
-Full walkthrough with troubleshooting: [`docs/getting-started.md`](docs/getting-started.md).
+The report shows the acceleration type, the tool versions, and the
+blockers. Correct all blockers before you continue.
+
+> **Note:** an HVF host or a host without acceleration shows as
+> development-only. Scored VM labs need native KVM. Use
+> `--require-kvm` to make the check fail on other hosts.
+
+### Step 6: Build the golden images (one time)
+
+The workers boot from baked images. With these images, a lab does not
+need package downloads at configuration time.
+
+```sh
+cd backend
+node scripts/build-catalog-image.mjs     # Debian image for most hosts
+node scripts/build-rocky-image.mjs       # Rocky 9 image for FreeIPA hosts
+```
+
+Each script boots a pinned cloud image once and installs the packages.
+Then it writes the SHA512 to `backend/golden/`. The build needs network
+access. A lab run does not.
+
+> **Note:** a FreeIPA directory host needs the Rocky image. The platform
+> does not boot a FreeIPA host from the Debian image.
+
+### Step 7: Start the services
+
+Open one terminal for each service. In each terminal, go to the
+repository root and load `.env` first:
+
+```sh
+set -a && . ./.env && set +a
+```
+
+Then start one service in each terminal:
+
+| Terminal | Command | Port |
+|---|---|---|
+| 1 | `temporal server start-dev --port 7234` | 7234 |
+| 2 | `node backend/dist/designer/server.js` | 8787 |
+| 3 | `node backend/dist/api/main.js` | 8788 |
+| 4 | `node backend/dist/worker.js` | None |
+| 5 | `cd frontend && npm run dev` | 5173 |
+
+Start Temporal before the worker. The worker connects to
+`localhost:7234`. To use a different server, set `TEMPORAL_ADDRESS`.
+
+### Step 8: Run an exercise in the console
+
+1. Open `http://localhost:5173`.
+2. Sign in.
+3. Go to **Designer**.
+4. Describe an organization in plain English. Example: "A 12-person
+   medical clinic with a gateway, a directory, mail, a PHP intranet, and
+   a patient database."
+5. Examine the design, the build plan, and the cost.
+6. Acknowledge the cost. Then click **Approve & deploy**.
+7. Go to **Environments** and monitor the build. The worker starts the
+   machines, configures them, and runs the readiness checks.
+8. When the checks pass, the exercise starts automatically.
+9. When the exercise ends, go to **Exercises** to see the score. Go to
+   **Red Team** and **Blue Team** to see the evidence.
+
+### Step 9 (alternative): Run the demo without the console
+
+The demo script builds the clinic lab, runs the exercise, and scores it.
+It does not need the console, the designer, or Temporal.
+
+```sh
+cd backend
+node scripts/org-demo.mjs                      # fixed-seed design, scripted agents
+node scripts/org-demo.mjs --agents             # model agents (needs Modal keys)
+node scripts/org-demo.mjs --prompt "<brief>"   # the model designs the lab
+```
+
+The script reads `.env` from the repository root. It writes the run to
+`backend/captures/org-demo/<runId>/`.
+
+To verify a recorded run offline, use the replay script. It needs no
+VMs, no network, and no model:
+
+```sh
+node scripts/org-demo-replay.mjs captures/org-demo/<runId>
+```
+
+The script checks the dataset hash and scores the trace again. If the
+result is different from the recorded score, the script fails.
+
+### Problems and solutions
+
+| Problem | Cause | Solution |
+|---|---|---|
+| The console shows "not configured". | The console cannot find a service URL. | Set `VITE_DESIGN_API_URL` and `VITE_LEARNING_API_URL`. Then restart `npm run dev`. |
+| The console shows "Authentication is not configured". | `VITE_CLERK_PUBLISHABLE_KEY` is not set. | Set it in `frontend/.env.local`. Then restart `npm run dev`. |
+| A deployment stays in `pending`. | The worker does not operate, or it cannot connect to the database or Temporal. | Examine the worker terminal. Make sure that Temporal operates on port 7234. |
+| A FreeIPA host fails `profile-install`. | The Rocky golden image is not available. | Do Step 6 again for the Rocky image. |
+| Training stops in `awaiting_trainer`. | No trainer endpoint is set. | Set `META_TRAINER_URL`. Or keep the run parked. A parked run never shows success. |
+
+For more information, read [`docs/getting-started.md`](docs/getting-started.md)
+and [`docs/learning-api.md`](docs/learning-api.md).
 
 ## Architecture
 
